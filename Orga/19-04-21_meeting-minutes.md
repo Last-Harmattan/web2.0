@@ -60,7 +60,7 @@ No final decision was taken and we  agreed to do further research on the merits 
 	* Jan was interested in handling the backend with Python as well as REST APIs
 	* Marvin showed interest in experimenting with Go and WebRCT
 
-# Until the next Meeting
+## Until the next Meeting
 
 * Monday 26th of April 2021 at 11:00 a.m.
 * all users should individually gain an overview over the discussed technologies and seek out possible alternatives
