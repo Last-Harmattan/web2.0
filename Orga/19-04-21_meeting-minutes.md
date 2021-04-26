@@ -1,6 +1,6 @@
 # Meeting 1
 
-* 19th of April 2021 11:00-12:00 a.m.
+* 19th of April 2021 11:00 a.m. - 12:00 p.m.
 * Minute taker: Paul Max Scholz
 * Attendants:
 	* Marvin Davieds
