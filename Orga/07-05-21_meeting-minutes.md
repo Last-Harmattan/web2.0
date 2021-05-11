@@ -3,14 +3,14 @@
 * 7th of May 2021 03:00 p.m. - 04:00 p.m.
 * Minute taker: Paul Max Scholz
 * Attendants:
-        * Marvin Davieds
-        * Jan Hasselberg
-        * Julian Ohland
-        * Paul Max Scholz
-        * Lukas Schüler
+	* Marvin Davieds
+	* Jan Hasselberg
+	* Julian Ohland
+	* Paul Max Scholz
+	* Lukas Schüler
 
 * Excused:
-        * Sanket Sadanad Deshpande
+	* Sanket Sadanad Deshpande
 
 ## Agenda
 
