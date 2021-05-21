@@ -1,0 +1,7 @@
+{
+  "editorconfig": true,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "arrowParens": "avoid",
+  "printWidth": 100
+}
