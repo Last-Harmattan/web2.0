@@ -1,12 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import Post from './component/Post';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Post
+      name={'Alexander Peterson'}
+      time={'4:44'}
+      content={'Pommes und Disco'}
+      likes={420}
+      dislikes={69}
+    />
   </React.StrictMode>,
   document.getElementById('root')
 );
