@@ -1,0 +1,57 @@
+.Post-Header {
+  color: white;
+  font-size: larger;
+  background-color: #204e4a;
+  border: 2pt solid #204e4a;
+  border-radius: 8pt 8pt 0pt 0pt;
+  padding-left: 16pt;
+  padding-right: 16pt;
+  padding-top: 4pt;
+  padding-bottom: 4pt;
+  overflow: auto;
+}
+
+.Post-Header-Name {
+  float: left;
+  width: 80%;
+}
+
+.Post-Header-Time {
+  float: right;
+}
+
+.Post-Content {
+  font-size: large;
+  font-weight: bold;
+  border-left: 2pt solid #204e4a;
+  border-right: 2pt solid #204e4a;
+  padding-left: 16pt;
+  padding-right: 16pt;
+  padding-top: 4pt;
+  padding-bottom: 4pt;
+}
+
+.Post-Footer {
+  border-radius: 0pt 0pt 8pt 8pt;
+  border-left: 2pt solid #204e4a;
+  border-right: 2pt solid #204e4a;
+  border-bottom: 2pt solid #204e4a;
+  padding-left: 16pt;
+  padding-right: 16pt;
+  padding-top: 4pt;
+  padding-bottom: 4pt;
+  overflow: auto;
+}
+
+.Post-Footer-Comment {
+  border: 0px;
+  float: left;
+  width: 66%;
+  font-size: medium;
+}
+
+.Post-Footer-Rating {
+  float: right;
+  font-weight: bold;
+  font-size: medium;
+}
