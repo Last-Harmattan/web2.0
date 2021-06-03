@@ -4,7 +4,7 @@ import PostContent from './PostContent';
 import PostFooter from './PostFooter';
 import PostHeader from './PostHeader';
 
-interface PostProps {
+interface CommentProps {
   name: string;
   time: string;
   content: string;
@@ -12,16 +12,16 @@ interface PostProps {
   dislikes: number;
 }
 
-class Post extends React.Component<PostProps, {}> {
+class Comment extends React.Component<CommentProps, {}> {
   render() {
     return (
-      <div>
-        <PostHeader name={this.props.name} time={this.props.time} isComment={false} />
+      <div className='Comment'>
+        <PostHeader name={this.props.name} time={this.props.time} isComment={true} />
         <PostContent content={this.props.content} />
-        <PostFooter likes={this.props.likes} dislikes={this.props.dislikes} isComment={false} />
+        <PostFooter likes={this.props.likes} dislikes={this.props.dislikes} isComment={true} />
       </div>
     );
   }
 }
 
-export default Post;
+export default Comment;
