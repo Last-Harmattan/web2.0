@@ -1,9 +1,11 @@
+/* Post */
+
 .Post-Header {
   color: white;
   font-size: larger;
   background-color: #204e4a;
   border: 2pt solid #204e4a;
-  border-radius: 8pt 8pt 0pt 0pt;
+  border-radius: 4pt 4pt 0pt 0pt;
   padding-left: 16pt;
   padding-right: 16pt;
   padding-top: 4pt;
@@ -25,6 +27,7 @@
   font-weight: bold;
   border-left: 2pt solid #204e4a;
   border-right: 2pt solid #204e4a;
+  background-color: white;
   padding-left: 16pt;
   padding-right: 16pt;
   padding-top: 4pt;
@@ -32,10 +35,11 @@
 }
 
 .Post-Footer {
-  border-radius: 0pt 0pt 8pt 8pt;
+  border-radius: 0pt 0pt 4pt 4pt;
   border-left: 2pt solid #204e4a;
   border-right: 2pt solid #204e4a;
   border-bottom: 2pt solid #204e4a;
+  background-color: white;
   padding-left: 16pt;
   padding-right: 16pt;
   padding-top: 4pt;
@@ -44,9 +48,8 @@
 }
 
 .Post-Footer-Comment {
-  border: 0px;
-  float: left;
   width: 66%;
+  border: 0px;
   font-size: medium;
 }
 
@@ -54,4 +57,33 @@
   float: right;
   font-weight: bold;
   font-size: medium;
+  height: 100%;
+}
+
+/* Comment */
+
+.Comment {
+  float: right;
+  width: 80%;
+  margin-top: 4pt;
+}
+
+.Comment-Header {
+  color: #204e4a;
+  font-size: larger;
+  background-color: white;
+  border: 2pt solid #204e4a;
+  border-radius: 8pt 8pt 0pt 0pt;
+  padding-left: 16pt;
+  padding-right: 16pt;
+  padding-top: 4pt;
+  padding-bottom: 4pt;
+  overflow: auto;
+}
+
+/* Util */
+
+.Center {
+  margin: auto;
+  width: 50%;
 }

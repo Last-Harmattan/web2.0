@@ -6,10 +6,6 @@ interface PostContentProps {
 }
 
 class PostContent extends React.Component<PostContentProps, {}> {
-  constructor(props: PostContentProps) {
-    super(props);
-  }
-
   render() {
     return <div className='Post-Content'>{this.props.content}</div>;
   }

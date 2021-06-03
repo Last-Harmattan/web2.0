@@ -1,18 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Comment from './component/Comment';
 import Post from './component/Post';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Post
-      name={'Alexander Peterson'}
-      time={'4:44'}
-      content={'Pommes und Disco'}
-      likes={420}
-      dislikes={69}
-    />
+    <div className='Center'>
+      <Post
+        name={'Alexander Peterson'}
+        time={'4:44'}
+        content={'Pommes und Disco'}
+        likes={420}
+        dislikes={69}
+      />
+
+      <Comment
+        name={'Alexander Peterson'}
+        time={'4:44'}
+        content={'Pommes und Disco'}
+        likes={420}
+        dislikes={69}
+      />
+    </div>
   </React.StrictMode>,
   document.getElementById('root')
 );
