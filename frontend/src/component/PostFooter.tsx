@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Components.css';
 
 interface PostFooterProps {
@@ -7,45 +7,45 @@ interface PostFooterProps {
   isComment: boolean;
 }
 
-class PostFooter extends React.Component<PostFooterProps, {}> {
-  render() {
-    return this.getLayout();
-  }
+function PostFooter(props: PostFooterProps) {
+  const [likes] = useState<number>(props.likes);
+  const [dislikes] = useState<number>(props.dislikes);
+  return getLayout(props, likes, dislikes);
+}
 
-  getLayout() {
-    if (this.props.isComment) {
-      return this.getLayoutForComment();
-    } else {
-      return this.getLayoutForPost();
-    }
+function getLayout(props: PostFooterProps, likes: number, dislikes: number) {
+  if (props.isComment) {
+    return getLayoutForComment(props, likes, dislikes);
+  } else {
+    return getLayoutForPost(props, likes, dislikes);
   }
+}
 
-  getLayoutForComment() {
-    return (
-      <div className='Post-Footer'>
-        <div className='Post-Footer-Rating'>{this.getRatingString()}</div>
-      </div>
-    );
-  }
+function getLayoutForComment(props: PostFooterProps, likes: number, dislikes: number) {
+  return (
+    <div className='Post-Footer'>
+      <div className='Post-Footer-Rating'>{getRatingString(likes, dislikes)}</div>
+    </div>
+  );
+}
 
-  getLayoutForPost() {
-    return (
-      <div className='Post-Footer'>
-        <input
-          className='Post-Footer-Comment'
-          type='text'
-          id='comment'
-          name='comment'
-          placeholder='Kommentieren'
-        ></input>
-        <div className='Post-Footer-Rating'>{this.getRatingString()}</div>
-      </div>
-    );
-  }
+function getLayoutForPost(props: PostFooterProps, likes: number, dislikes: number) {
+  return (
+    <div className='Post-Footer'>
+      <input
+        className='Post-Footer-Comment'
+        type='text'
+        id='comment'
+        name='comment'
+        placeholder='Kommentieren'
+      ></input>
+      <div className='Post-Footer-Rating'>{getRatingString(likes, dislikes)}</div>
+    </div>
+  );
+}
 
-  getRatingString() {
-    return this.props.likes + ' Likes | ' + this.props.dislikes + ' Dislikes';
-  }
+function getRatingString(likes: number, dislikes: number) {
+  return likes + ' Likes | ' + dislikes + ' Dislikes';
 }
 
 export default PostFooter;
