@@ -1,9 +1,9 @@
 import sqlite3, uuid, json
-from bottle import Bottle, run, request, response
+from bottle import Bottle, run, request, response, HTTPResponse
 
 app = Bottle()
 
-# DB mit SQLite
+# DB with SQLite
 con = sqlite3.connect("users.db")
 cur = con.cursor()
 
@@ -15,16 +15,13 @@ def createDB():
     CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(36),
     nick VARCHAR(30),
-    sessionid VARCHAR(30)
-    );"""
+    sessionid VARCHAR(30),
+    PRIMARY KEY (id));"""
     cur.execute(sql_query)
     con.commit()
 
 def insertUserToDB(nick,sessionid):
-    sql_query = """
-    INSERT INTO users (id,nick,sessionid)
-    VALUES ('"""+str(uuid.uuid4())+"','"+nick+"','"+sessionid+"""');"""
-    cur.execute(sql_query)
+    cur.execute("INSERT INTO users (id,nick,sessionid) VALUES ('{person_id}', '{unick}', '{usessionid}') ".format(person_id=str(uuid.uuid4()), unick=nick, usessionid=sessionid))
     con.commit()
 
 def queryToJSON(query):
@@ -42,58 +39,43 @@ def getAllUsers():
         erg[e[0]]= {"nick":e[1],"sessionid":e[-1]}
     return json.dumps((erg))
 
-def getUsersbyQuery(query):
-    #q = query.split(" ")
-    sql_query = """
-    SELECT * FROM users
-    WHERE nick LIKE '%"""+query+"""%'"""
-    #if(len(q)>1):
-    #    sql_query = sql_query + """AND surname LIKE '%"""+q[1]+"""%'"""
-    cur.execute(sql_query)
+def getUsersByQuery(query):
+    cur.execute("SELECT * FROM users WHERE nick LIKE '%{}%'".format(query))
     content=cur.fetchall()
 
     return(queryToJSON(content))
 
-#init()
-
-#insertUserToDB("imke warnecke", "asg34g3q")
-#insertUserToDB("jan hasselbacg", "298ag4gaw0")
-#insertUserToDB("jan warnecke", "298fhosf0")
-
-
 @app.route('/api/call', method='GET')
 def api_getAllUsers():
-
     try:
         function = request.query['function']
     except:
-        return "Query unvollständig."
+        return HTTPResponse(status=502, body="502: query incomplete")
 
-    # Alle Nutzer aus DB abfragen.
+    # get all users
     if ( function=="getallusers" ):
         response.headers['Content-Type'] = 'application/json'
         return getAllUsers()
-    # Einen neuen Nutzer hinzufügen.
+    # add new user
     elif ( function == "createuser" ):
-        response.headers['Content-Type'] = 'application/json'
         try:
+            response.headers['Content-Type'] = 'application/json'
             name = request.query['name']
             location = request.query['location']
         except:
-            return "Error 502."
+            return HTTPResponse(status=502, body="502: query incomplete")
         insertUserToDB( name, location )
-    # Suchabfrage nach Nutzern.
+    # search query for users
     elif ( function == "search" ):
         response.headers['Content-Type'] = 'application/json'
         try:
             name = request.query['name']
         except:
-            return "Error 502."
-        return getUsersbyQuery(name)
-
-
-
+            return HTTPResponse(status=502, body="query incomplete")
+        return getUsersByQuery(name)
     else:
-        return "Error 404: Function not found."
+        return HTTPResponse(status=404, body="function not found")
+
+init()
 
 run(app, host='127.0.0.1', port=8800, quiet=False)
