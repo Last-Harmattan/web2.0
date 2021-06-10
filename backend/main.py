@@ -21,7 +21,7 @@ def createDB():
     con.commit()
 
 def insertUserToDB(nick,sessionid):
-    cur.execute("INSERT INTO users (id,nick,sessionid) VALUES ('{person_id}', '{unick}', '{usessionid}') ".format(person_id=str(uuid.uuid4()), unick=nick, usessionid=sessionid))
+    cur.execute("INSERT INTO users (id,nick,sessionid) VALUES (?,?,?)", (str(uuid.uuid4()), nick, sessionid))
     con.commit()
 
 def queryToJSON(query):
@@ -40,7 +40,7 @@ def getAllUsers():
     return json.dumps((erg))
 
 def getUsersByQuery(query):
-    cur.execute("SELECT * FROM users WHERE nick LIKE '%{}%'".format(query))
+    cur.execute("select * from users where nick = ?", [query])
     content=cur.fetchall()
 
     return(queryToJSON(content))
