@@ -1,28 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Post from './component/Post';
+import App from './App';
 import './index.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <div className='Center'>
-      <Post
-        name={'Alexander Peterson'}
-        time={'4:44'}
-        content={'Pommes und Disco'}
-        likes={420}
-        dislikes={69}
-        isComment={false}
-      />
-      <Post
-        name={'Alexander Peterson'}
-        time={'4:44'}
-        content={'Pommes und Disco'}
-        likes={420}
-        dislikes={69}
-        isComment={true}
-      />
-    </div>
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
