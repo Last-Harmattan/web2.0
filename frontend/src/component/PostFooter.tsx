@@ -1,5 +1,5 @@
 import React from 'react';
-import './Components.css';
+import './PostFooter.css';
 
 interface PostFooterProps {
   likes: number;
