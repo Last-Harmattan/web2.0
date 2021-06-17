@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Components.css';
 
 interface PostFooterProps {
@@ -8,28 +8,26 @@ interface PostFooterProps {
 }
 
 function PostFooter(props: PostFooterProps) {
-  const [likes] = useState<number>(props.likes);
-  const [dislikes] = useState<number>(props.dislikes);
-  return getLayout(props, likes, dislikes);
+  return getLayout(props);
 }
 
-function getLayout(props: PostFooterProps, likes: number, dislikes: number) {
+function getLayout(props: PostFooterProps) {
   if (props.isComment) {
-    return getLayoutForComment(props, likes, dislikes);
+    return getLayoutForComment(props);
   } else {
-    return getLayoutForPost(props, likes, dislikes);
+    return getLayoutForPost(props);
   }
 }
 
-function getLayoutForComment(props: PostFooterProps, likes: number, dislikes: number) {
+function getLayoutForComment(props: PostFooterProps) {
   return (
     <div className='Post-Footer'>
-      <div className='Post-Footer-Rating'>{getRatingString(likes, dislikes)}</div>
+      <div className='Post-Footer-Rating'>{getRatingString(props)}</div>
     </div>
   );
 }
 
-function getLayoutForPost(props: PostFooterProps, likes: number, dislikes: number) {
+function getLayoutForPost(props: PostFooterProps) {
   return (
     <div className='Post-Footer'>
       <input
@@ -39,13 +37,13 @@ function getLayoutForPost(props: PostFooterProps, likes: number, dislikes: numbe
         name='comment'
         placeholder='Kommentieren'
       ></input>
-      <div className='Post-Footer-Rating'>{getRatingString(likes, dislikes)}</div>
+      <div className='Post-Footer-Rating'>{getRatingString(props)}</div>
     </div>
   );
 }
 
-function getRatingString(likes: number, dislikes: number) {
-  return likes + ' Likes | ' + dislikes + ' Dislikes';
+function getRatingString(props: PostFooterProps) {
+  return props.likes + ' Likes | ' + props.dislikes + ' Dislikes';
 }
 
 export default PostFooter;

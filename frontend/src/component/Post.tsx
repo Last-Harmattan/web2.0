@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Components.css';
 import PostContent from './PostContent';
 import PostFooter from './PostFooter';
@@ -14,19 +14,13 @@ interface PostProps {
 }
 
 function Post(props: PostProps) {
-  const [name] = useState<string>(props.name);
-  const [time] = useState<string>(props.time);
-  const [content] = useState<string>(props.content);
-  const [likes] = useState<number>(props.likes);
-  const [dislikes] = useState<number>(props.dislikes);
-
-  var className = props.isComment ? 'Comment' : '';
+  const className = props.isComment ? 'Comment' : '';
 
   return (
     <div className={className}>
-      <PostHeader name={name} time={time} isComment={props.isComment} />
-      <PostContent content={content} />
-      <PostFooter likes={likes} dislikes={dislikes} isComment={props.isComment} />
+      <PostHeader name={props.name} time={props.time} isComment={props.isComment} />
+      <PostContent content={props.content} />
+      <PostFooter likes={props.likes} dislikes={props.dislikes} isComment={props.isComment} />
     </div>
   );
 }

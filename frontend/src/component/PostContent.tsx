@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Components.css';
 
 interface PostContentProps {
@@ -6,9 +6,7 @@ interface PostContentProps {
 }
 
 function PostContent(props: PostContentProps) {
-  const [content] = useState<string>(props.content);
-
-  return <div className='Post-Content'>{content}</div>;
+  return <div className='Post-Content'>{props.content}</div>;
 }
 
 export default PostContent;
