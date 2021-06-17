@@ -7,7 +7,7 @@ interface PostHeaderProps {
   isComment: boolean;
 }
 
-function PostHeader(props: PostHeaderProps) {
+export function PostHeader(props: PostHeaderProps) {
   const className = props.isComment ? 'Comment-Header' : 'Post-Header';
 
   return (
@@ -17,5 +17,3 @@ function PostHeader(props: PostHeaderProps) {
     </div>
   );
 }
-
-export default PostHeader;
