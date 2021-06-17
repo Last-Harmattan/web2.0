@@ -5,8 +5,6 @@ interface PostContentProps {
   content: string;
 }
 
-function PostContent(props: PostContentProps) {
+export function PostContent(props: PostContentProps) {
   return <div className='Post-Content'>{props.content}</div>;
 }
-
-export default PostContent;

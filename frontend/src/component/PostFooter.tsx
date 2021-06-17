@@ -7,7 +7,7 @@ interface PostFooterProps {
   isComment: boolean;
 }
 
-function PostFooter(props: PostFooterProps) {
+export function PostFooter(props: PostFooterProps) {
   return getLayout(props);
 }
 
@@ -45,5 +45,3 @@ function getLayoutForPost(props: PostFooterProps) {
 function getRatingString(props: PostFooterProps) {
   return props.likes + ' Likes | ' + props.dislikes + ' Dislikes';
 }
-
-export default PostFooter;

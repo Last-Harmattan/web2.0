@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
-import Post from './component/Post';
+import { Post } from './component/Post';
 
-function App() {
+export function App() {
   return (
     <div className='Center'>
       <Post
@@ -24,5 +24,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

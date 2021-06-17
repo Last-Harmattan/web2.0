@@ -1,8 +1,8 @@
 import React from 'react';
 import './Post.css';
-import PostContent from './PostContent';
-import PostFooter from './PostFooter';
-import PostHeader from './PostHeader';
+import { PostContent } from './PostContent';
+import { PostFooter } from './PostFooter';
+import { PostHeader } from './PostHeader';
 
 interface PostProps {
   name: string;
@@ -13,7 +13,7 @@ interface PostProps {
   isComment: boolean;
 }
 
-function Post(props: PostProps) {
+export function Post(props: PostProps) {
   const className = props.isComment ? 'Comment' : '';
 
   return (
@@ -24,5 +24,3 @@ function Post(props: PostProps) {
     </div>
   );
 }
-
-export default Post;
