@@ -1,5 +1,5 @@
 import React from 'react';
-import './Components.css';
+import './PostContent.css';
 
 interface PostContentProps {
   content: string;
