@@ -4,7 +4,7 @@ Jam for brainstorming:
 https://jamboard.google.com/d/1PUAdFFH2JnCZlO4skcGbdgKDP4LJaizgQhiU4esRsL4/viewer?f=2
 
 Frontend Types:
-Person = (ID, Username, Password, (Friend.ID)*)
+Person = (ID, Username, privateKey, publicKey, (Friend.ID)*)
 Friend = (ID, Username, lastOnline)
 
 BasePost = (ID, Author, Date, Content, Likes, Dislikes)
@@ -14,8 +14,9 @@ Comment = BasePost
 Feedback -> ((Like | Dislike), Post.ID)
 
 Username = String
-Password = Hash(Password)
 Content = String
-Date = DateTime/LocalDate/… - still to choose
+privateKey = string
+publicKey = string
+Date = ISO-8086 string in UTC
 Likes/Dislikes = Int
 lastOnline = DateTime/LocalDate/… - still to choose
