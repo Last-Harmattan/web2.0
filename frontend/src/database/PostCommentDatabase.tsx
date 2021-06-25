@@ -62,3 +62,24 @@ export class DBWrapper {
     );
   }
 }
+
+export function test() {
+  let button = document.getElementById('test');
+
+  if (button) {
+    button.onclick = function () {
+      let post: Post = new Post(
+        '1',
+        'Thomas',
+        '01.01.2021, 11:59:42',
+        'Diest ist der Content des Posts',
+        420,
+        69,
+        []
+      );
+      let dbWrapper: DBWrapper = new DBWrapper();
+
+      dbWrapper.savePost(post);
+    };
+  }
+}
