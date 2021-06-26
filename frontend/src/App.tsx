@@ -1,10 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import './database/PostCommentDatabase';
+import { TestButton } from './database/TestButton';
 
 function App() {
-  return <button id='test'>Click me hard!</button>;
+  return <TestButton />;
 }
 
 export default App;
