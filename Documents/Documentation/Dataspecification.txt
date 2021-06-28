@@ -19,4 +19,4 @@ privateKey = string
 publicKey = string
 Date = ISO-8086 string in UTC
 Likes/Dislikes = Int
-lastOnline = DateTime/LocalDate/… - still to choose
+lastOnline = Date
