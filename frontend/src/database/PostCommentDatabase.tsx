@@ -1,4 +1,3 @@
-//import Pouch from 'pouchdb-core';
 import PouchDB from 'pouchdb-browser';
 import find from 'pouchdb-find';
 import rel from 'relational-pouch';
@@ -53,7 +52,7 @@ export class DBWrapper {
     );
   }
 
-  getPostById(id: string) {
+  getPostById(id: String) {
     this.relationalDB.rel.find('post', id).then(
       function onSuccess(post) {
         console.log(post);
@@ -63,18 +62,30 @@ export class DBWrapper {
       }
     );
   }
+
+  updatePost(post: Post) {
+    this.relationalDB.rel.save('post', post).then(
+      function onSucces(value) {
+        console.log(value);
+      },
+      function onError(error) {
+        console.log(error);
+      }
+    );
+  }
 }
 
-export function test() {
-  let post: Post = new Post(
-    '1',
-    'Thomas',
-    '01.01.2021, 11:59:42',
-    'Diest ist der Content des Posts',
-    420,
-    69,
-    []
-  );
+export function testSaveNewPost(post: Post) {
+  console.log('Start store new post test');
+
   let dbWrapper: DBWrapper = new DBWrapper();
   dbWrapper.savePost(post);
+  dbWrapper.getPostById(post.id);
+}
+
+export function testGetPost(id: String) {
+  console.log('Start get post test');
+
+  let dbWrapper: DBWrapper = new DBWrapper();
+  dbWrapper.getPostById(id);
 }
