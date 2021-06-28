@@ -6,6 +6,7 @@ import './Login.css';
 export function Login() {
   return (
     <div className='Center'>
+      <div className='Heading'>Login</div>
       <div>
         <TextInput placeholder={'Name'} type={TextInputType.TEXT}></TextInput>
       </div>
@@ -13,7 +14,7 @@ export function Login() {
         <TextInput placeholder={'Passwort'} type={TextInputType.PASSWORD}></TextInput>
       </div>
       <div>
-        <Button label={'Log In'}></Button>
+        <Button label={'Anmelden'}></Button>
       </div>
     </div>
   );
