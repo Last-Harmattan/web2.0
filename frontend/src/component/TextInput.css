@@ -1,0 +1,12 @@
+.login_text_input {
+  box-sizing: border-box;
+  padding: 10px;
+  width: 100%;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 2px solid #204e4a;
+  box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.2);
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
