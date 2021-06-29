@@ -1,4 +1,4 @@
-.Content {
+.Center {
   margin: 0;
   position: absolute;
   width: 250px;
@@ -21,7 +21,7 @@
   margin-top: 10px;
 }
 
-.Registration-Link {
+.Login-Link {
   color: #204e4a;
   float: right;
   text-decoration: none;
