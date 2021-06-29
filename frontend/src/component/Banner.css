@@ -1,7 +1,7 @@
 .Banner {
   height: 50px;
   background-color: #204e4a;
-  position: relative;
+  position: sticky;
 }
 
 .BannerName {
