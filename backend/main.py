@@ -86,14 +86,6 @@ def api_search():
     response.headers['Content-Type'] = 'application/json'
     return getUsersByQuery(name)
 
-# route for update a location object for an specific user
-@app.route('/api/call/updatelocation')
-def api_updateLocationOfUser():
-    def insertNewLocation(id, location):
-        cur.execute("INSERT INTO users (id,nick,sessionid) VALUES (?,?,?)", (id, location))
-        con.commit()
-
-    insertNewLocation()
 
 
 init()
