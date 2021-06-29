@@ -8,73 +8,93 @@ con = sqlite3.connect("users.db")
 cur = con.cursor()
 
 def init():
+
+    def createDB():
+        sql_query = """
+        CREATE TABLE IF NOT EXISTS users (
+        id VARCHAR(36),
+        nick VARCHAR(30),
+        sessionid VARCHAR(30),
+        PRIMARY KEY (id));"""
+        cur.execute(sql_query)
+        con.commit()
+
     createDB()
 
-def createDB():
-    sql_query = """
-    CREATE TABLE IF NOT EXISTS users (
-    id VARCHAR(36),
-    nick VARCHAR(30),
-    sessionid VARCHAR(30),
-    PRIMARY KEY (id));"""
-    cur.execute(sql_query)
-    con.commit()
 
-def insertUserToDB(nick,sessionid):
-    cur.execute("INSERT INTO users (id,nick,sessionid) VALUES (?,?,?)", (str(uuid.uuid4()), nick, sessionid))
-    con.commit()
 
-def queryToJSON(query):
-    re = []
-    for e in query:
-        re.append({"id":e[0],"nick":e[1],"sessionid":e[-1]})
-    return(json.dumps(re))
-
-def getAllUsers():
-    sql_query = """SELECT * FROM users"""
-    cur.execute(sql_query)
-    content=cur.fetchall()
-    erg = {}
-    for e in content:
-        erg[e[0]]= {"nick":e[1],"sessionid":e[-1]}
-    return json.dumps((erg))
-
-def getUsersByQuery(query):
-    cur.execute("select * from users where nick = ?", [query])
-    content=cur.fetchall()
-
-    return(queryToJSON(content))
-
-@app.route('/api/call', method='GET')
+# route for debugging
+# get information about all users
+@app.route('/api/call/getallusers')
+@app.route('/api/call/getAllUsers')
 def api_getAllUsers():
+
+    def getAllUsers():
+        sql_query = """SELECT * FROM users"""
+        cur.execute(sql_query)
+        content=cur.fetchall()
+        erg = {}
+        for e in content:
+            erg[e[0]] = {"nick":e[1],"location":e[-1]}
+        return json.dumps(erg)
+
+    response.headers['Content-Type'] = 'application/json'
+    return getAllUsers()
+
+
+# route for user registration
+# without public key - tbd
+@app.route('/api/call/createuser')
+@app.route('/api/call/createUser')
+def api_insertUser():
+
+    def insertUserToDB(id,nick,sessionid):
+        cur.execute("INSERT INTO users (id,nick,sessionid) VALUES (?,?,?)", (id, nick, sessionid))
+        con.commit()
+
     try:
-        function = request.query['function']
+        name = request.query['name']
+        location = request.query['location']
     except:
         return HTTPResponse(status=502, body="502: query incomplete")
+    response.headers['Content-Type'] = 'application/json'
 
-    # get all users
-    if ( function=="getallusers" ):
-        response.headers['Content-Type'] = 'application/json'
-        return getAllUsers()
-    # add new user
-    elif ( function == "createuser" ):
-        try:
-            response.headers['Content-Type'] = 'application/json'
-            name = request.query['name']
-            location = request.query['location']
-        except:
-            return HTTPResponse(status=502, body="502: query incomplete")
-        insertUserToDB( name, location )
-    # search query for users
-    elif ( function == "search" ):
-        response.headers['Content-Type'] = 'application/json'
-        try:
-            name = request.query['name']
-        except:
-            return HTTPResponse(status=502, body="query incomplete")
-        return getUsersByQuery(name)
-    else:
-        return HTTPResponse(status=404, body="function not found")
+    id = str(uuid.uuid4())
+    insertUserToDB(id,name,location)
+
+    return json.dumps({"id":id})
+
+# route for search functionality
+@app.route('/api/call/search')
+def api_search():
+
+    def queryToJSON(query):
+        re = []
+        for e in query:
+            re.append({"id":e[0],"nick":e[1],"location":e[-1]})
+        return(json.dumps(re))
+
+    def getUsersByQuery(query):
+        cur.execute("select * from users where nick = ?", [query])
+        content=cur.fetchall()
+        return(queryToJSON(content))
+
+    try:
+        name = request.query['name']
+    except:
+        return HTTPResponse(status=502, body="query incomplete")
+    response.headers['Content-Type'] = 'application/json'
+    return getUsersByQuery(name)
+
+# route for update a location object for an specific user
+@app.route('/api/call/updatelocation')
+def api_updateLocationOfUser():
+    def insertNewLocation(id, location):
+        cur.execute("INSERT INTO users (id,nick,sessionid) VALUES (?,?,?)", (id, location))
+        con.commit()
+
+    insertNewLocation()
+
 
 init()
 
