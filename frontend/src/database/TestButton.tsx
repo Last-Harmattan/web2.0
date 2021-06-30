@@ -75,6 +75,7 @@ export class TestButton extends React.Component {
         <input id='getPostId'></input>
         <br></br>
         <button onClick={this.getPost}>getPost</button>
+        <br></br>
 
         <label id='outputLabel'>Output</label>
       </>

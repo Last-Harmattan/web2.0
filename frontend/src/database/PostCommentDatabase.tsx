@@ -2,6 +2,7 @@ import PouchDB from 'pouchdb-browser';
 import find from 'pouchdb-find';
 import rel from 'relational-pouch';
 import { Post } from './types/Post';
+import { DbEntryMethaData } from './types/DbEntryMethaData';
 
 PouchDB.plugin(find).plugin(rel);
 
@@ -28,58 +29,34 @@ export class DBWrapper {
         },
       },
     ]);
+
+    this.vanillaDB.createIndex({ index: { fields: ['data.post', '_id'] } });
   }
 
-  savePost(post: Post) {
-    this.relationalDB.rel.save('post', post).then(
-      function onSuccess(idAndRevision) {
-        console.log(idAndRevision);
-      },
-      function onError(error) {
-        console.log(error);
-      }
-    );
+  saveOrUpdatePost(post: Post): Promise<DbEntryMethaData> {
+    return this.relationalDB.rel.save('post', post);
   }
 
-  getAllPosts() {
-    this.relationalDB.rel.find('post').then(
-      function onSuccess(posts) {
-        console.log(posts);
-      },
-      function onError(error) {
-        console.log(error);
-      }
-    );
+  getAllPosts(): Promise<Array<Post>> {
+    return this.relationalDB.rel.find('post').then(function onSuccess(posts) {
+      return posts.posts;
+    });
   }
 
-  getPostById(id: String) {
-    this.relationalDB.rel.find('post', id).then(
-      function onSuccess(post) {
-        console.log(post);
-      },
-      function onError(error) {
-        console.log(error);
-      }
-    );
+  getPostById(id: String): Promise<Post> {
+    return this.relationalDB.rel.find('post', id).then(function onSuccess(post: any) {
+      return post.posts[0];
+    });
   }
 
-  updatePost(post: Post) {
-    this.relationalDB.rel.save('post', post).then(
-      function onSucces(value) {
-        console.log(value);
-      },
-      function onError(error) {
-        console.log(error);
-      }
-    );
-  }
+  addCommentToPost(postID: String, comment: Comment) {}
 }
 
 export function testSaveNewPost(post: Post) {
   console.log('Start store new post test');
 
   let dbWrapper: DBWrapper = new DBWrapper();
-  dbWrapper.savePost(post);
+  dbWrapper.saveOrUpdatePost(post);
   dbWrapper.getPostById(post.id);
 }
 
@@ -87,5 +64,12 @@ export function testGetPost(id: String) {
   console.log('Start get post test');
 
   let dbWrapper: DBWrapper = new DBWrapper();
-  dbWrapper.getPostById(id);
+  dbWrapper.getPostById(id).then(
+    function onSuccess(post: Post) {
+      console.log(post);
+    },
+    function onFailure(error) {
+      console.log(error);
+    }
+  );
 }
