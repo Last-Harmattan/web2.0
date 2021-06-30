@@ -18,7 +18,7 @@ export class DBWrapper {
         singular: 'post',
         plural: 'posts',
         relations: {
-          comments: { hasMany: 'comment' },
+          comments: { hasMany: { type: 'comment', options: { queryInverse: 'post' } } },
         },
       },
       {
@@ -49,7 +49,7 @@ export class DBWrapper {
     });
   }
 
-  addCommentToPost(postID: String, comment: Comment) {}
+  addCommentToPost(postId: String, comment: Comment) {}
 }
 
 export function testSaveNewPost(post: Post) {
