@@ -1,5 +1,5 @@
 import React from 'react';
-import { Post } from './types/Post';
+import { Post } from './types/public/Post';
 import { testGetPost, testSaveNewPost, resetDatabaseTest } from './PostCommentDatabase';
 
 export class TestButton extends React.Component {

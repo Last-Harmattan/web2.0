@@ -1,5 +1,5 @@
 import PouchDB from 'pouchdb-browser';
-import { Post } from './types/Post';
+import { Post } from './types/public/Post';
 import { DbEntryMethaData } from './types/DbEntryMethaData';
 import { AllDocumentsInterface, Row } from './types/internal/AllDocumentsInterface';
 

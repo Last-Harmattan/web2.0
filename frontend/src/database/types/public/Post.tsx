@@ -1,3 +1,5 @@
+import { Comment } from './Comment';
+
 export interface Post {
   _id: string;
   _rev?: string;
