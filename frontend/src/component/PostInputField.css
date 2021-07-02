@@ -1,0 +1,17 @@
+.PostInputField {
+  padding: 10px;
+  border: 2px solid #204e4a;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 1000px;
+  resize: vertical;
+  min-height: 50px;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: 600;
+  outline: none;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  float: right;
+}

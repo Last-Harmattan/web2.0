@@ -1,9 +1,10 @@
 .Post-Header {
   color: white;
   font-size: larger;
+  font-weight: 600;
   background-color: #204e4a;
-  border: 3px solid #204e4a;
-  border-radius: 8px 8px 0px 0px;
+  border: 2px solid #204e4a;
+  border-radius: 10px 10px 0px 0px;
   padding-left: 24px;
   padding-right: 24px;
   padding-top: 8px;
@@ -23,9 +24,10 @@
 .Comment-Header {
   color: #204e4a;
   font-size: larger;
+  font-weight: 600;
   background-color: white;
-  border: 3px solid #204e4a;
-  border-radius: 8px 8px 0px 0px;
+  border: 2px solid #204e4a;
+  border-radius: 10px 10px 0px 0px;
   padding-left: 24px;
   padding-right: 24px;
   padding-top: 8px;
