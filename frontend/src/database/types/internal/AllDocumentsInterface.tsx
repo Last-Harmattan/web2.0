@@ -1,5 +1,3 @@
-import * as PouchDB from 'pouchdb';
-
 export interface AllDocumentsInterface {
   offset: number;
   total_rows: number;
