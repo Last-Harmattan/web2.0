@@ -1,6 +1,6 @@
 import React from 'react';
 import { Post } from './types/Post';
-import { testGetPost, testSaveNewPost } from './PostCommentDatabase';
+import { testGetPost, testSaveNewPost, resetDatabaseTest } from './PostCommentDatabase';
 
 export class TestButton extends React.Component {
   savePost = () => {
@@ -12,7 +12,7 @@ export class TestButton extends React.Component {
     let dislikes = (document.getElementById('newPostDislikes') as HTMLInputElement).value;
 
     let post: Post = {
-      id: id,
+      _id: id,
       author: author,
       date: date,
       content: content,
@@ -27,6 +27,10 @@ export class TestButton extends React.Component {
   getPost = () => {
     let id = (document.getElementById('getPostId') as HTMLInputElement).value;
     testGetPost(id);
+  };
+
+  resetDatabase = () => {
+    resetDatabaseTest();
   };
 
   render() {
@@ -77,7 +81,7 @@ export class TestButton extends React.Component {
         <button onClick={this.getPost}>getPost</button>
         <br></br>
 
-        <label id='outputLabel'>Output</label>
+        <button onClick={this.resetDatabase}>Reset Database!</button>
       </>
     );
   }

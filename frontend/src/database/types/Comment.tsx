@@ -1,8 +1,10 @@
 export interface Comment {
-  id: String;
-  author: String;
+  _id: string;
+  _rev?: string;
+  postId: string;
+  author: string;
   date: Date;
-  content: String;
-  likes: BigInt;
-  dislikes: BigInt;
+  content: string;
+  likes: number;
+  dislikes: number;
 }
