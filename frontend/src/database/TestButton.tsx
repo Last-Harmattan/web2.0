@@ -1,9 +1,41 @@
 import React from 'react';
 import { Post } from './types/public/Post';
-import { testGetPost, testSaveNewPost, resetDatabaseTest } from './PostCommentDatabase';
+import {
+  testGetPost,
+  testSaveNewPost,
+  resetDatabaseTest,
+  genericTestMethod,
+  testUpdatePost,
+  addCommentToPostTest,
+} from './PostCommentDatabase';
 
 export class TestButton extends React.Component {
   savePost = () => {
+    let post: Post = this.readPostInfos();
+
+    testSaveNewPost(post);
+  };
+
+  updatePost = () => {
+    let post: Post = this.readPostInfos();
+
+    testUpdatePost(post);
+  };
+
+  getPost = () => {
+    let id = (document.getElementById('getPostId') as HTMLInputElement).value;
+    testGetPost(id);
+  };
+
+  resetDatabase = () => {
+    resetDatabaseTest();
+  };
+
+  genericTest = () => {
+    addCommentToPostTest();
+  };
+
+  private readPostInfos(): Post {
     let id = (document.getElementById('newPostId') as HTMLInputElement).value;
     let author = (document.getElementById('newPostAuthor') as HTMLInputElement).value;
     let date = (document.getElementById('newPostDate') as HTMLInputElement).value;
@@ -21,17 +53,8 @@ export class TestButton extends React.Component {
       comments: [],
     };
 
-    testSaveNewPost(post);
-  };
-
-  getPost = () => {
-    let id = (document.getElementById('getPostId') as HTMLInputElement).value;
-    testGetPost(id);
-  };
-
-  resetDatabase = () => {
-    resetDatabaseTest();
-  };
+    return post;
+  }
 
   render() {
     return (
@@ -71,7 +94,11 @@ export class TestButton extends React.Component {
 
         <>For Updating a post the id has to be set!</>
         <br></br>
-        <button onClick={this.savePost}>Save/Update Post!</button>
+        <button onClick={this.savePost}>SavePost!</button>
+
+        <button onClick={this.updatePost}>Update Post!</button>
+        <br></br>
+        <br></br>
 
         <h2>GetPostByID Test</h2>
         <label>Id: </label>
@@ -79,6 +106,11 @@ export class TestButton extends React.Component {
         <input id='getPostId'></input>
         <br></br>
         <button onClick={this.getPost}>getPost</button>
+        <br></br>
+        <br></br>
+
+        <button onClick={this.genericTest}>GenericTest</button>
+        <br></br>
         <br></br>
 
         <button onClick={this.resetDatabase}>Reset Database!</button>

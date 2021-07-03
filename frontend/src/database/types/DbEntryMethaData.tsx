@@ -1,4 +1,4 @@
 export interface DbEntryMethaData {
-  id: String;
-  rev: String;
+  id: string;
+  rev: string;
 }

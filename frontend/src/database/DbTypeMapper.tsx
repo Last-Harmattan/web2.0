@@ -19,7 +19,6 @@ export class DbTypeMapper {
   static mapComment(commentDb: CommentDB): Comment {
     return {
       _id: commentDb._id,
-      postId: commentDb.postId,
       author: commentDb.author,
       date: commentDb.date,
       content: commentDb.content,
