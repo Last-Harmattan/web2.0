@@ -3,6 +3,7 @@ import find from 'pouchdb-find';
 import { Post } from './types/public/Post';
 import { PostDB } from './types/internal/PostDB';
 import { CommentDB } from './types/internal/CommentDb';
+import { FindResults } from './types/internal/FindResults';
 import { Comment } from './types/public/Comment';
 import { DbTypeMapper } from './DbTypeMapper';
 import { DbEntryMethaData } from './types/DbEntryMethaData';
@@ -18,61 +19,64 @@ export class DBWrapper {
   }
 
   saveNewPost(post: Post): Promise<DbEntryMethaData> {
-    post._id = 'post' + post._id;
-    return this.db.put(post).then(function onSuccess(metaData: DbEntryMethaData) {
+    post._id = undefined;
+    return this.db.post(post).then(function onSuccess(metaData: DbEntryMethaData) {
       return metaData;
     });
   }
 
   getPostById(id: string): Promise<Post> {
     return this.db.get<PostDB>(id).then((post: PostDB) => {
-      return this.getCommentsToPost(post._id).then((comments: Comment[]) => {
+      return this.getCommentsToPost(id).then((comments: Comment[]) => {
         return DbTypeMapper.mapPost(post, comments);
       });
     });
   }
 
   getAllPosts(): Promise<Array<Post>> {
-    return this.db
-      .allDocs({ startkey: 'post', endkey: 'post\ufff0', include_docs: true })
-      .then(function onSuccess(data: AllDocumentsInterface) {
-        var posts: Array<Post> = new Array<Post>();
-        for (let row of data.rows) {
-          posts.push(row.doc);
-        }
-        return posts;
-      });
+    return this.db.find({ selector: { type: 'post' } }).then((result: FindResults) => {
+      for (let post of result.docs) {
+        this.getCommentsToPost(post._id).then((comments: Comment[]) => {
+          post.comments = comments;
+        });
+      }
+      return result.docs;
+    });
   }
 
-  addCommentToPost(postId: string, comment: Comment) {
-    return this.db.get<Post>(postId).then((post: Post) => {
-      post.comments.push(comment);
-      return this.db.put(post);
-    });
+  addCommentToPost(postId: string, comment: Comment): Promise<DbEntryMethaData> {
+    comment._id = undefined;
+    let newCommentDb: CommentDB = {
+      postId: postId,
+      type: 'comment',
+      author: comment.author,
+      date: 'date',
+      content: comment.content,
+      likes: comment.likes,
+      dislikes: comment.dislikes,
+    };
+
+    return this.db.post(newCommentDb);
   }
 
   getCommentsToPost(postId: string): Promise<Array<Comment>> {
     return this.db
-      .allDocs({ startkey: 'comment', endkey: 'comment\ufff0', include_docs: true })
-      .then(function onSuccess(data: AllDocumentsInterface) {
-        var comments: Array<Comment> = new Array<Comment>();
-        for (let row of data.rows) {
-          let doc = row.doc;
-          comments.push(DbTypeMapper.mapComment(doc));
-        }
-        return comments;
+      .find({ selector: { type: 'comment', postId: postId } })
+      .then(function onSuccess(result: FindResults) {
+        let commentsDb: Array<CommentDB> = result.docs;
+        return DbTypeMapper.mapComments(commentsDb);
       });
   }
 
   updateComment(comment: Comment): Promise<DbEntryMethaData> {
-    return this.db.get<Post>(comment.postId).then((post: Post) => {
-      for (let comm of post.comments) {
-        if (comment._id == comm._id) {
-          comm == comment;
-          break;
-        }
-      }
-      return this.db.put(post);
+    return this.db.get<CommentDB>(comment._id!).then((commentDb: CommentDB) => {
+      commentDb.author = comment.author;
+      commentDb.content = comment.content;
+      commentDb.date = comment.date;
+      commentDb.likes = comment.likes;
+      commentDb.dislikes = comment.dislikes;
+
+      return this.db.put(commentDb);
     });
   }
 

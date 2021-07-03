@@ -1,9 +1,10 @@
 export interface CommentDB {
-  _id: string;
-  _rev: string;
+  _id?: string;
+  _rev?: string;
+  type: string;
   postId: string;
   author: string;
-  date: Date;
+  date: string;
   content: string;
   likes: number;
   dislikes: number;

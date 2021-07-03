@@ -27,4 +27,8 @@ export class DbTypeMapper {
       dislikes: commentDb.dislikes,
     };
   }
+
+  static mapComments(commentsDb: Array<CommentDB>): Comment[] {
+    return commentsDb.map(this.mapComment);
+  }
 }
