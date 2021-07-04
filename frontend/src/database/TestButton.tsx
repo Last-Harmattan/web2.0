@@ -6,6 +6,8 @@ import {
   resetDatabaseTest,
   genericTestMethod,
   testUpdatePost,
+  deletePostTest,
+  deleteCommentTest,
   addCommentToPostTest,
 } from './PostCommentDatabase';
 
@@ -27,12 +29,22 @@ export class TestButton extends React.Component {
     testGetPost(id);
   };
 
+  deletePost = () => {
+    let id = (document.getElementById('getPostId') as HTMLInputElement).value;
+    deletePostTest(id);
+  };
+
+  deleteComment = () => {
+    let id = (document.getElementById('getPostId') as HTMLInputElement).value;
+    deleteCommentTest(id);
+  };
+
   resetDatabase = () => {
     resetDatabaseTest();
   };
 
   genericTest = () => {
-    addCommentToPostTest();
+    genericTestMethod();
   };
 
   private readPostInfos(): Post {
@@ -106,14 +118,16 @@ export class TestButton extends React.Component {
         <input id='getPostId'></input>
         <br></br>
         <button onClick={this.getPost}>getPost</button>
+        <button onClick={this.deletePost}>deletePost</button>
+        <button onClick={this.deletePost}>deleteComment</button>
         <br></br>
         <br></br>
 
-        <button onClick={this.genericTest}>GenericTest</button>
+        <button onClick={this.genericTest}>Print Database</button>
         <br></br>
         <br></br>
 
-        <button onClick={this.resetDatabase}>Reset Database!</button>
+        <button onClick={this.resetDatabase}>Reset Database</button>
       </>
     );
   }

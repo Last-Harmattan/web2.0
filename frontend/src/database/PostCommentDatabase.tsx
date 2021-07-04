@@ -43,7 +43,12 @@ export class DBWrapper {
         };
         commentsDb.push(commentDb);
       }
-      return this.db.bulkDocs(commentsDb);
+      return this.db.bulkDocs(commentsDb).then(value => {
+        value.unshift(metaData);
+        console.log('success:');
+        console.log(value);
+        return value.push();
+      });
     });
   }
 
@@ -133,6 +138,10 @@ export class DBWrapper {
     });
   }
 
+  showCompleteDatabaseContent(): Promise<any> {
+    return this.db.allDocs({ include_docs: true });
+  }
+
   destroyDatabase() {
     this.db.destroy().then(
       function onSuccess(okStatus) {
@@ -148,15 +157,42 @@ export class DBWrapper {
 export function testSaveNewPost(post: Post) {
   console.log('Start store new post test');
 
-  let comment: Comment = {
-    author: 'Just another author',
-    date: 'Today',
-    content: 'This is a commentar',
-    likes: 123,
-    dislikes: 345,
+  let comment1: Comment = {
+    author: 'author1',
+    date: '1:00',
+    content: 'Comment1',
+    likes: 420,
+    dislikes: 69,
   };
 
-  post.comments.push(comment);
+  let comment2: Comment = {
+    author: 'author2',
+    date: '2:00',
+    content: 'Comment1',
+    likes: 123,
+    dislikes: 123,
+  };
+
+  let comment3: Comment = {
+    author: 'author3',
+    date: '3:00',
+    content: 'Comment3',
+    likes: 1,
+    dislikes: 5,
+  };
+
+  let comment4: Comment = {
+    author: 'author4',
+    date: '4:00',
+    content: 'Comment4',
+    likes: 4,
+    dislikes: 3,
+  };
+
+  post.comments.push(comment1);
+  post.comments.push(comment2);
+  post.comments.push(comment3);
+  post.comments.push(comment4);
 
   let dbWrapper: DBWrapper = new DBWrapper();
   dbWrapper.saveNewPost(post).then(
@@ -203,19 +239,6 @@ export function resetDatabaseTest() {
   dbWrapper.destroyDatabase();
 }
 
-export function genericTestMethod() {
-  let dbWrapper: DBWrapper = new DBWrapper();
-
-  dbWrapper.getAllPosts().then(
-    function onSuccess(result) {
-      console.log(result);
-    },
-    function onFailure(error) {
-      console.log(error);
-    }
-  );
-}
-
 export function addCommentToPostTest() {
   let dbWrapper: DBWrapper = new DBWrapper();
 
@@ -228,6 +251,47 @@ export function addCommentToPostTest() {
   };
 
   dbWrapper.addCommentToPost('3e91dc5b-591e-423c-a5ef-388965160a32', comment).then(
+    function onSuccess(result) {
+      console.log(result);
+    },
+    function onFailure(error) {
+      console.log(error);
+    }
+  );
+}
+
+export function deletePostTest(id: string) {
+  console.log('Start delete Post Test!');
+  let dbWrapper: DBWrapper = new DBWrapper();
+
+  dbWrapper.deletePost(id).then(
+    function onSuccess(result) {
+      console.log(result);
+    },
+    function onFailure(error) {
+      console.log(error);
+    }
+  );
+}
+
+export function deleteCommentTest(id: string) {
+  console.log('Start delete Comment Test!');
+  let dbWrapper: DBWrapper = new DBWrapper();
+
+  dbWrapper.deleteComment(id).then(
+    function onSuccess(result) {
+      console.log(result);
+    },
+    function onFailure(error) {
+      console.log(error);
+    }
+  );
+}
+
+export function genericTestMethod() {
+  let dbWrapper: DBWrapper = new DBWrapper();
+
+  dbWrapper.showCompleteDatabaseContent().then(
     function onSuccess(result) {
       console.log(result);
     },
