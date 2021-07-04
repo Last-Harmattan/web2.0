@@ -6,12 +6,12 @@ import { CommentDB } from './types/internal/CommentDb';
 import { FindResults } from './types/internal/FindResults';
 import { Comment } from './types/public/Comment';
 import { DbTypeMapper } from './DbTypeMapper';
-import { DbEntryMethaData } from './types/DbEntryMethaData';
+import { DbEntryMethaData } from './types/internal/DbEntryMethaData';
 import { AllDocumentsInterface } from './types/internal/AllDocumentsInterface';
 
 PouchDB.plugin(find);
 
-export class DBWrapper {
+export class CommentDBWrapper {
   private db: PouchDB.Database<{}>;
 
   constructor() {
@@ -194,7 +194,7 @@ export function testSaveNewPost(post: Post) {
   post.comments.push(comment3);
   post.comments.push(comment4);
 
-  let dbWrapper: DBWrapper = new DBWrapper();
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
   dbWrapper.saveNewPost(post).then(
     function onSuccess(result) {
       console.log(result);
@@ -208,7 +208,7 @@ export function testSaveNewPost(post: Post) {
 export function testUpdatePost(post: Post) {
   console.log('Start update post test');
 
-  let dbWrapper: DBWrapper = new DBWrapper();
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
   dbWrapper.updatePost(post).then(
     function onSuccess(result) {
       console.log(result);
@@ -222,7 +222,7 @@ export function testUpdatePost(post: Post) {
 export function testGetPost(id: string) {
   console.log('Start get post test');
 
-  let dbWrapper: DBWrapper = new DBWrapper();
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
   dbWrapper.getPostById(id).then(
     function onSuccess(post: Post) {
       console.log(post);
@@ -234,13 +234,13 @@ export function testGetPost(id: string) {
 }
 
 export function resetDatabaseTest() {
-  let dbWrapper: DBWrapper = new DBWrapper();
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
 
   dbWrapper.destroyDatabase();
 }
 
 export function addCommentToPostTest() {
-  let dbWrapper: DBWrapper = new DBWrapper();
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
 
   let comment: Comment = {
     author: 'Ein Anderer',
@@ -262,7 +262,7 @@ export function addCommentToPostTest() {
 
 export function deletePostTest(id: string) {
   console.log('Start delete Post Test!');
-  let dbWrapper: DBWrapper = new DBWrapper();
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
 
   dbWrapper.deletePost(id).then(
     function onSuccess(result) {
@@ -276,7 +276,7 @@ export function deletePostTest(id: string) {
 
 export function deleteCommentTest(id: string) {
   console.log('Start delete Comment Test!');
-  let dbWrapper: DBWrapper = new DBWrapper();
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
 
   dbWrapper.deleteComment(id).then(
     function onSuccess(result) {
@@ -289,7 +289,7 @@ export function deleteCommentTest(id: string) {
 }
 
 export function genericTestMethod() {
-  let dbWrapper: DBWrapper = new DBWrapper();
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
 
   dbWrapper.showCompleteDatabaseContent().then(
     function onSuccess(result) {
