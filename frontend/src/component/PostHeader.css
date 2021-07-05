@@ -1,0 +1,34 @@
+.Post-Header {
+  color: white;
+  font-size: larger;
+  background-color: #204e4a;
+  border: 3px solid #204e4a;
+  border-radius: 8px 8px 0px 0px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  overflow: auto;
+}
+
+.Post-Header-Name {
+  float: left;
+  width: 80%;
+}
+
+.Post-Header-Time {
+  float: right;
+}
+
+.Comment-Header {
+  color: #204e4a;
+  font-size: larger;
+  background-color: white;
+  border: 3px solid #204e4a;
+  border-radius: 8px 8px 0px 0px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  overflow: auto;
+}

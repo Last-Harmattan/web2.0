@@ -1,10 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { TestButton } from './database/TestButton';
+import { Post } from './component/Post';
 
-function App() {
-  return <TestButton />;
+export function App() {
+  return (
+    <div className='Center'>
+      <Post
+        name={'Alexander Peterson'}
+        time={'4:44'}
+        content={'Pommes und Disco'}
+        likes={420}
+        dislikes={69}
+        isComment={false}
+      />
+      <Post
+        name={'Alexander Peterson'}
+        time={'4:44'}
+        content={'Pommes und Disco'}
+        likes={420}
+        dislikes={69}
+        isComment={true}
+      />
+    </div>
+  );
 }
-
-export default App;

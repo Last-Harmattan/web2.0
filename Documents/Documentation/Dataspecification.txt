@@ -1,0 +1,22 @@
+Data Specification
+
+Jam for brainstorming:
+https://jamboard.google.com/d/1PUAdFFH2JnCZlO4skcGbdgKDP4LJaizgQhiU4esRsL4/viewer?f=2
+
+Frontend Types:
+Person = (ID, Username, privateKey, publicKey, (Friend.ID)*)
+Friend = (ID, Username, lastOnline)
+
+BasePost = (ID, Author, Date, Content, Likes, Dislikes)
+Post = (BasePost, (Comment)*)
+Comment = BasePost
+
+Feedback -> ((Like | Dislike), Post.ID)
+
+Username = String
+Content = String
+privateKey = string
+publicKey = string
+Date = ISO-8086 string in UTC
+Likes/Dislikes = Int
+lastOnline = Date
