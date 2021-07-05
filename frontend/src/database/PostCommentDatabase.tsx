@@ -10,6 +10,16 @@ import { DbEntryMethaData } from './types/internal/DbEntryMethaData';
 
 PouchDB.plugin(find);
 
+/**
+ * @class
+ *
+ * This database service is a wrapper that is responsible for
+ * storing, updating and deleting posts and comments on the
+ * local database
+ *
+ * @member db - PoiuchDb database object
+ *
+ **/
 export class CommentDBWrapper {
   private db: PouchDB.Database<{}>;
 
@@ -17,6 +27,20 @@ export class CommentDBWrapper {
     this.db = new PouchDB('Web20DB');
   }
 
+  /**
+  Stores the passed post object and its containing comment objects in the database.
+  Returns a promise of a list where an entry can be a MetaDataObject or an error
+  The Ids that are returned are the Ids that are assingend to the post and the comments
+  in the database.
+  On the first place of the Array is the result for the post. The following
+  entires are in the same order the comments were in the post object.
+  Set these Ids in the post and comment objects that are originally passed to
+  the function on your side!
+  Ids are required for editing and deletion of objects in the database.
+   * 
+   * @param post - Post that shall be stored in the database.
+   * @returns {Promise<(DbEntryMethaData | PouchDB.Core.Error)[]>}
+  */
   saveNewPost(post: Post): Promise<(DbEntryMethaData | PouchDB.Core.Error)[]> {
     const postDb: PostDB = {
       type: 'post',
@@ -49,6 +73,15 @@ export class CommentDBWrapper {
     });
   }
 
+  /**
+   * Delete the post with the given Id. Deletes also its comments
+   * Returns a Promise of a list where an entry is either a DbEntryMetadata object
+   * or an error. Check the results to see if the post and the comments
+   * are deleted correctly.
+   *
+   * @param postId - Id of the post that shall be deleted.
+   * @returns {Promise<(DbEntryMethaData | PouchDB.Core.Error)[]>}
+   */
   deletePost(postId: string): Promise<(DbEntryMethaData | PouchDB.Core.Error)[]> {
     return this.db
       .find({ selector: { type: 'comment', postId: postId } })
