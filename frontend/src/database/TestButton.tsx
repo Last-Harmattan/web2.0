@@ -9,7 +9,7 @@ import {
   deletePostTest,
   deleteCommentTest,
   addCommentToPostTest,
-} from './PostCommentDatabase';
+} from './tests/PostCommentDatabaseTests';
 
 export class TestButton extends React.Component {
   savePost = () => {
@@ -119,7 +119,7 @@ export class TestButton extends React.Component {
         <br></br>
         <button onClick={this.getPost}>getPost</button>
         <button onClick={this.deletePost}>deletePost</button>
-        <button onClick={this.deletePost}>deleteComment</button>
+        <button onClick={this.deleteComment}>deleteComment</button>
         <br></br>
         <br></br>
 
