@@ -1,5 +1,15 @@
-import sqlite3, uuid, json
+import sqlite3, uuid, json, os
 from bottle import Bottle, run, request, response, HTTPResponse
+
+
+from base64 import (
+    b64encode,
+    b64decode,
+)
+
+from Crypto.Hash import SHA256
+from Crypto.Signature import pkcs1_15
+from Crypto.PublicKey import RSA
 
 app = Bottle()
 
@@ -86,7 +96,16 @@ def api_search():
     response.headers['Content-Type'] = 'application/json'
     return getUsersByQuery(name)
 
-
+# route for upload user public key
+@app.route('/api/call/uploadpubkey', method="POST")
+def upPublicKey():
+    key = request.files.get('FILE')
+    ID = request.forms.get('ID')
+    name, ext = os.path.splitext(key.filename)
+    if ext not in ('.pem'):
+        return HTTPResponse(status=502, body="wrong file extension")
+    file_path = "keys/{file}".format(file=ID+".pem")
+    key.save(file_path)
 
 init()
 
