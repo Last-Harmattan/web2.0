@@ -1,13 +1,12 @@
 import React from 'react';
-import { Banner } from './component/Banner';
-import { Button } from './component/Button';
-import { TextInput, TextInputType } from './component/TextInput';
+import { Link } from 'react-router-dom';
+import { Button } from '../component/Button';
+import { TextInput, TextInputType } from '../component/TextInput';
 import './Signup.css';
 
 export function Signup() {
   return (
     <div>
-      <Banner></Banner>
       <div className='Center'>
         <div className='Heading'>Registrieren</div>
         <div>
@@ -22,10 +21,9 @@ export function Signup() {
         <div className='Button-Margin'>
           <Button label={'Registrieren'}></Button>
         </div>
-        <a href='loginpage.com' className='Login-Link'>
-          {/*durch den Link ersetzen, der zur Anmeldung führt*/}
+        <Link to='/login' className='Login-Link'>
           Anmelden
-        </a>
+        </Link>
       </div>
     </div>
   );
