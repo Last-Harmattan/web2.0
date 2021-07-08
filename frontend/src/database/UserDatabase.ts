@@ -50,19 +50,56 @@ export class UserDatabase {
       });
   }
 
+  deleteUserData(id: string): Promise<DbEntryMethaData> {
+    return this.db.get<UserDataDB>(id).then((userDataDB: UserDataDB) => {
+      return this.db.remove({ _id: userDataDB._id, _rev: userDataDB._rev });
+    });
+  }
+
+  addFriend(friend: Friend): Promise<DbEntryMethaData> {
+    const friendDB: FriendDB = {
+      type: 'friend',
+      userId: friend.userId,
+      userName: friend.userName,
+      lastOnline: friend.lastOnline,
+    };
+
+    return this.db.post(friendDB);
+  }
+
+  updateFriend(friend: Friend): Promise<DbEntryMethaData> {
+    return this.db.get<FriendDB>(friend._id).then((friendDB: FriendDB) => {
+      friendDB.lastOnline = friend.lastOnline;
+      friendDB.userId = friend.userId;
+      friendDB.userName = friend.userName;
+
+      return this.db.put(friendDB);
+    });
+  }
+
   /**
-   * Deleting the userData will also delete the friends
-   * wich is basically a reset of the database.
+   * Searches the db for a friend with _id
+   *
+   * @param _id Id in the database NOT the userID
+   * @returns {Promise<Friend>} Promise with either the friend object or an error object
    */
-  deleteUserData() {}
+  getFriend(_id: string): Promise<Friend> {
+    return this.db.get<FriendDB>(_id).then(function onSuccess(friendDB: FriendDB) {
+      return UserDBTypeMapper.mapToFriend(friendDB);
+    });
+  }
 
-  addFriend(friend: Friend) {}
+  getAllFriends(): Promise<Array<Friend>> {
+    return this.db
+      .find({ selector: { type: 'friend' } })
+      .then(function onSuccess(findResults: FindResults) {
+        return UserDBTypeMapper.mapFriendsDBToFriends(findResults.docs);
+      });
+  }
 
-  updateFriend(friend: Friend) {}
-
-  getFriend() {}
-
-  getAllFriends() {}
-
-  deleteFriend(id) {}
+  deleteFriend(id): Promise<DbEntryMethaData> {
+    return this.db.get<FriendDB>(id).then((friendDB: FriendDB) => {
+      return this.db.remove({ _id: friendDB._id, _rev: friendDB._rev });
+    });
+  }
 }

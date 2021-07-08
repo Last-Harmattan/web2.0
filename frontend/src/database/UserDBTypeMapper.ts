@@ -15,6 +15,10 @@ export class UserDBTypeMapper {
     };
   }
 
+  static mapFriendsDBToFriends(friendsDB: Array<FriendDB>): Array<Friend> {
+    return friendsDB.map(this.mapToFriend);
+  }
+
   static mapToFriend(friendDB: FriendDB): Friend {
     return {
       _id: friendDB._id,
