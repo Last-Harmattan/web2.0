@@ -1,0 +1,17 @@
+.Banner {
+  height: 50px;
+  background-color: #204e4a;
+  position: sticky;
+}
+
+.BannerName {
+  color: white;
+  font-weight: 600;
+  font-size: larger;
+  margin-left: 20px;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}

@@ -14,7 +14,7 @@ interface PostProps {
 }
 
 export function Post(props: PostProps) {
-  const className = props.isComment ? 'Comment' : '';
+  const className = props.isComment ? 'Comment' : 'Post';
 
   return (
     <div className={className}>
