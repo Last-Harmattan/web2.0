@@ -1,0 +1,29 @@
+.Content {
+  margin: 0;
+  position: absolute;
+  width: 250px;
+  top: 30%;
+  left: 50%;
+  -ms-transform: translate(-50%, -30%);
+  transform: translate(-50%, -30%);
+}
+
+.Heading {
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  font-family: inherit;
+  font-size: 18pt;
+  font-weight: 600;
+}
+
+.Button-Margin {
+  margin-top: 10px;
+}
+
+.Registration-Link {
+  color: #204e4a;
+  float: right;
+  text-decoration: none;
+  margin-right: 10px;
+}

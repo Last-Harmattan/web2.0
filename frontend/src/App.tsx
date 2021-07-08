@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
 import { Post } from './component/Post';
-import { UserDbTestComponent } from './database/UserDbTestComponent';
+import { PostInputField } from './component/PostInputField';
 
 export function App() {
-  /* 
   return (
     <div className='Center'>
+      <PostInputField placeholder={'Was möchtest du sagen?'} maxChars={200} />
       <Post
         name={'Alexander Peterson'}
         time={'4:44'}
@@ -25,6 +25,4 @@ export function App() {
       />
     </div>
   );
-  */
-  return <UserDbTestComponent></UserDbTestComponent>;
 }

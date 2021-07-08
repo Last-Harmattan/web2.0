@@ -1,5 +1,12 @@
 .Comment {
   float: right;
-  width: 80%;
+  width: 90%;
   margin-top: 8px;
+  max-width: 900px;
+}
+
+.Post {
+  width: 100%;
+  max-width: 1000px;
+  float: right;
 }
