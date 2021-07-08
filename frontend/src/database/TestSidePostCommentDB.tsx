@@ -11,7 +11,7 @@ import {
   addCommentToPostTest,
 } from './tests/PostCommentDatabaseTests';
 
-export class TestButton extends React.Component {
+export class TestSidePostCommentDB extends React.Component {
   savePost = () => {
     let post: Post = this.readPostInfos();
 
