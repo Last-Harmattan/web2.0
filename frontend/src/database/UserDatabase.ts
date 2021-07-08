@@ -10,6 +10,11 @@ import { Friend } from './types/public/Friend';
 
 PouchDB.plugin(find);
 
+/**
+ * Wrapper Class for the UserDb
+ *
+ * @class
+ */
 export class UserDatabase {
   private db: PouchDB.Database<{}>;
 
@@ -17,6 +22,12 @@ export class UserDatabase {
     this.db = new PouchDB('Web20DB_USER_DB');
   }
 
+  /**
+   * Saves the given userData in the database
+   *
+   * @param userData Userdata to be saved in the database
+   * @returns {Promise<DbEntryMethaData>} Promise with the status of the database action
+   */
   saveNewUserData(userData: UserData): Promise<DbEntryMethaData> {
     const userDataDB: UserDataDB = {
       type: 'userData',
@@ -30,6 +41,13 @@ export class UserDatabase {
     return this.db.post(userDataDB);
   }
 
+  /**
+   * Updates all properties the userdata in the database with the properties
+   * of the given userData object
+   *
+   * @param userData Userdata to be updated in the database
+   * @returns
+   */
   updateUserData(userData: UserData): Promise<DbEntryMethaData> {
     return this.db.get<UserDataDB>(userData._id!).then((userDataDB: UserDataDB) => {
       userDataDB.userID = userData.userID;
@@ -42,6 +60,12 @@ export class UserDatabase {
     });
   }
 
+  /**
+   * Returns the stored userData from the database.
+   * If no userData were stored null is returned instead
+   *
+   * @returns {Promise<DbEntryMethaData | null}
+   */
   getUserData(): Promise<UserData | null> {
     return this.db
       .find({ selector: { type: 'userData' } })
@@ -54,12 +78,24 @@ export class UserDatabase {
       });
   }
 
+  /**
+   * Deletes the userdata with the given databaseId
+   *
+   * @param id DatabaseId of the userData to be deleted
+   * @returns {Promise<DbEntryMethaData>} Promise with the result of the database action
+   */
   deleteUserData(id: string): Promise<DbEntryMethaData> {
     return this.db.get<UserDataDB>(id).then((userDataDB: UserDataDB) => {
       return this.db.remove({ _id: userDataDB._id!, _rev: userDataDB._rev! });
     });
   }
 
+  /**
+   * Stores the given friend object in the Database.
+   *
+   * @param friend Friend object to be stored in the database
+   * @returns {Promise<DbEntryMethaData>} Promise with the result of the database action
+   */
   addFriend(friend: Friend): Promise<DbEntryMethaData> {
     const friendDB: FriendDB = {
       type: 'friend',
@@ -71,6 +107,13 @@ export class UserDatabase {
     return this.db.post(friendDB);
   }
 
+  /**
+   * Updates all properties the friend object in the database with the properties
+   * of the given friend object
+   *
+   * @param friend Friend object to be updated
+   * @returns {Promise<DbEntryMethaData>} Promise with the result of the database action
+   */
   updateFriend(friend: Friend): Promise<DbEntryMethaData> {
     return this.db.get<FriendDB>(friend._id!).then((friendDB: FriendDB) => {
       friendDB.lastOnline = friend.lastOnline;
@@ -82,7 +125,7 @@ export class UserDatabase {
   }
 
   /**
-   * Searches the db for a friend with _id
+   * Returns the Friend Object with the given Id
    *
    * @param _id Id in the database NOT the userID
    * @returns {Promise<Friend>} Promise with either the friend object or an error object
@@ -93,6 +136,12 @@ export class UserDatabase {
     });
   }
 
+  /**
+   * Returns a list of all friends in the database
+   * Returns null if no friends are in the database.
+   *
+   * @returns {Promise<Array<Friend> | null>}
+   */
   getAllFriends(): Promise<Array<Friend> | null> {
     return this.db
       .find({ selector: { type: 'friend' } })
@@ -105,12 +154,23 @@ export class UserDatabase {
       });
   }
 
+  /**
+   * Deletes the friend with the given Id.
+   *
+   * @param id DatabaseId of the friend to be deleted
+   * @returns {Promise<Friend>} Promise with either the friend object or an error object
+   */
   deleteFriend(id: string): Promise<DbEntryMethaData> {
     return this.db.get<FriendDB>(id).then((friendDB: FriendDB) => {
       return this.db.remove({ _id: friendDB._id!, _rev: friendDB._rev! });
     });
   }
 
+  /**
+   * Deletes the whole database
+   *
+   * @returns {Promise<void>} Promise with the result of the database deletion
+   */
   deleteDB(): Promise<void> {
     return this.db.destroy();
   }
