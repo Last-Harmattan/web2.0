@@ -1,8 +1,10 @@
 import React from 'react';
 import './App.css';
 import { Post } from './component/Post';
+import { UserDbTestComponent } from './database/UserDbTestComponent';
 
 export function App() {
+  /* 
   return (
     <div className='Center'>
       <Post
@@ -23,4 +25,6 @@ export function App() {
       />
     </div>
   );
+  */
+  return <UserDbTestComponent></UserDbTestComponent>;
 }

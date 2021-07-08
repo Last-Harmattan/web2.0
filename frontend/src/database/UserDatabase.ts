@@ -31,7 +31,7 @@ export class UserDatabase {
   }
 
   updateUserData(userData: UserData): Promise<DbEntryMethaData> {
-    return this.db.get<UserDataDB>(userData._id).then((userDataDB: UserDataDB) => {
+    return this.db.get<UserDataDB>(userData._id!).then((userDataDB: UserDataDB) => {
       userDataDB.userID = userData.userID;
       userDataDB.lastOnline = userData.lastOnline;
       userDataDB.privateKey = userData.privateKey;
@@ -42,17 +42,21 @@ export class UserDatabase {
     });
   }
 
-  getUserData(): Promise<UserData> {
+  getUserData(): Promise<UserData | null> {
     return this.db
       .find({ selector: { type: 'userData' } })
       .then(function onSuccess(findResult: FindResults) {
-        return UserDBTypeMapper.mapToUserData(findResult.docs[0]);
+        if (findResult.docs.length == 0) {
+          return null;
+        } else {
+          return UserDBTypeMapper.mapToUserData(findResult.docs[0]);
+        }
       });
   }
 
   deleteUserData(id: string): Promise<DbEntryMethaData> {
     return this.db.get<UserDataDB>(id).then((userDataDB: UserDataDB) => {
-      return this.db.remove({ _id: userDataDB._id, _rev: userDataDB._rev });
+      return this.db.remove({ _id: userDataDB._id!, _rev: userDataDB._rev! });
     });
   }
 
@@ -68,7 +72,7 @@ export class UserDatabase {
   }
 
   updateFriend(friend: Friend): Promise<DbEntryMethaData> {
-    return this.db.get<FriendDB>(friend._id).then((friendDB: FriendDB) => {
+    return this.db.get<FriendDB>(friend._id!).then((friendDB: FriendDB) => {
       friendDB.lastOnline = friend.lastOnline;
       friendDB.userId = friend.userId;
       friendDB.userName = friend.userName;
@@ -89,17 +93,25 @@ export class UserDatabase {
     });
   }
 
-  getAllFriends(): Promise<Array<Friend>> {
+  getAllFriends(): Promise<Array<Friend> | null> {
     return this.db
       .find({ selector: { type: 'friend' } })
       .then(function onSuccess(findResults: FindResults) {
-        return UserDBTypeMapper.mapFriendsDBToFriends(findResults.docs);
+        if (findResults.docs.length == 0) {
+          return null;
+        } else {
+          return UserDBTypeMapper.mapFriendsDBToFriends(findResults.docs);
+        }
       });
   }
 
-  deleteFriend(id): Promise<DbEntryMethaData> {
+  deleteFriend(id: string): Promise<DbEntryMethaData> {
     return this.db.get<FriendDB>(id).then((friendDB: FriendDB) => {
-      return this.db.remove({ _id: friendDB._id, _rev: friendDB._rev });
+      return this.db.remove({ _id: friendDB._id!, _rev: friendDB._rev! });
     });
+  }
+
+  deleteDB(): Promise<void> {
+    return this.db.destroy();
   }
 }
