@@ -1,7 +1,6 @@
 import { createBrowserHistory } from 'history';
 import React, { useState } from 'react';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
-import './App.css';
 import { Banner } from './component/Banner';
 import { Feed } from './pages/Feed';
 import { Login } from './pages/Login';

@@ -1,5 +1,5 @@
 import React from 'react';
-import './TextInput.css';
+import styles from './TextInput.module.css';
 
 export enum TextInputType {
   TEXT = 'text',
@@ -13,6 +13,10 @@ interface TextInputProps {
 
 export function TextInput(props: TextInputProps) {
   return (
-    <input type={props.type} placeholder={props.placeholder} className='login_text_input'></input>
+    <input
+      type={props.type}
+      placeholder={props.placeholder}
+      className={styles.login_text_input}
+    ></input>
   );
 }

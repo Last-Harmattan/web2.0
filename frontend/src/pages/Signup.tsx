@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../component/Button';
 import { TextInput, TextInputType } from '../component/TextInput';
-import './Signup.css';
+import styles from './Signup.module.css';
 
 export function Signup() {
   return (
     <div>
-      <div className='Center'>
-        <div className='Heading'>Registrieren</div>
+      <div className={styles['Center']}>
+        <div className={styles['Heading']}>Registrieren</div>
         <div>
           <TextInput placeholder={'Nutzername'} type={TextInputType.TEXT}></TextInput>
         </div>
@@ -18,10 +18,10 @@ export function Signup() {
         <div>
           <TextInput placeholder={'Passwort wiederholen'} type={TextInputType.PASSWORD}></TextInput>
         </div>
-        <div className='Button-Margin'>
+        <div className={styles['Button-Margin']}>
           <Button label={'Registrieren'}></Button>
         </div>
-        <Link to='/login' className='Login-Link'>
+        <Link to='/login' className={styles['Login-Link']}>
           Anmelden
         </Link>
       </div>

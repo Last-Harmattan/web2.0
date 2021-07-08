@@ -1,11 +1,11 @@
 import React from 'react';
 import { Post } from '../component/Post';
 import { PostInputField } from '../component/PostInputField';
-import './Feed.css';
+import styles from './Feed.module.css';
 
 export function Feed() {
   return (
-    <div className='Center'>
+    <div className={styles.Center}>
       <PostInputField placeholder={'Was möchtest du sagen?'} maxChars={200} />
       <Post
         name={'Alexander Peterson'}

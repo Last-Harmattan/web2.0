@@ -1,5 +1,5 @@
 import React from 'react';
-import './PostHeader.css';
+import styles from './PostHeader.module.css';
 
 interface PostHeaderProps {
   name: string;
@@ -8,12 +8,12 @@ interface PostHeaderProps {
 }
 
 export function PostHeader(props: PostHeaderProps) {
-  const className = props.isComment ? 'Comment-Header' : 'Post-Header';
+  const className = props.isComment ? styles['Comment-Header'] : styles['Post-Header'];
 
   return (
     <div className={className}>
-      <div className='Post-Header-Name'>{props.name}</div>
-      <div className='Post-Header-Time'>{props.time}</div>
+      <div className={styles['Post-Header-Name']}>{props.name}</div>
+      <div className={styles['Post-Header-Time']}>{props.time}</div>
     </div>
   );
 }
