@@ -1,28 +1,26 @@
-import React from 'react';
-import './App.css';
-import { Post } from './component/Post';
-import { PostInputField } from './component/PostInputField';
+import { createBrowserHistory } from 'history';
+import React, { useState } from 'react';
+import { Redirect, Route, Router, Switch } from 'react-router-dom';
+import { Banner } from './component/Banner';
+import { Feed } from './pages/Feed';
+import { Login } from './pages/Login';
+import { Signup } from './pages/Signup';
 
+const customHistory = createBrowserHistory();
 export function App() {
+  const [isLoggedIn, setLoggedIn] = useState(true);
+
   return (
-    <div className='Center'>
-      <PostInputField placeholder={'Was möchtest du sagen?'} maxChars={200} />
-      <Post
-        name={'Alexander Peterson'}
-        time={'4:44'}
-        content={'Pommes und Disco'}
-        likes={420}
-        dislikes={69}
-        isComment={false}
-      />
-      <Post
-        name={'Alexander Peterson'}
-        time={'4:44'}
-        content={'Pommes und Disco'}
-        likes={420}
-        dislikes={69}
-        isComment={true}
-      />
+    <div>
+      <Router history={customHistory}>
+        <Banner></Banner>
+
+        <Switch>
+          <Route path='/login'>{isLoggedIn ? <Redirect to='/' /> : <Login />}</Route>
+          <Route path='/signup'>{isLoggedIn ? <Redirect to='/' /> : <Signup />}</Route>
+          <Route path='/'>{isLoggedIn ? <Feed /> : <Redirect to='/login' />}</Route>
+        </Switch>
+      </Router>
     </div>
   );
 }

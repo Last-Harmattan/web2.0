@@ -1,10 +1,10 @@
 import React from 'react';
-import './Button.css';
+import styles from './Button.module.css';
 
 interface ButtonProps {
   label: string;
 }
 
 export function Button(props: ButtonProps) {
-  return <button className='button'>{props.label}</button>;
+  return <button className={styles.button}>{props.label}</button>;
 }

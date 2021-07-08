@@ -1,5 +1,5 @@
 import React from 'react';
-import './PostFooter.css';
+import styles from './PostFooter.module.css';
 
 interface PostFooterProps {
   likes: number;
@@ -21,23 +21,23 @@ function getLayout(props: PostFooterProps) {
 
 function getLayoutForComment(props: PostFooterProps) {
   return (
-    <div className='Post-Footer'>
-      <div className='Post-Footer-Rating'>{getRatingString(props)}</div>
+    <div className={styles['Post-Footer']}>
+      <div className={styles['Post-Footer-Rating']}>{getRatingString(props)}</div>
     </div>
   );
 }
 
 function getLayoutForPost(props: PostFooterProps) {
   return (
-    <div className='Post-Footer'>
+    <div className={styles['Post-Footer']}>
       <input
-        className='Post-Footer-Comment'
+        className={styles['Post-Footer-Comment']}
         type='text'
         id='comment'
         name='comment'
         placeholder='Kommentieren'
       ></input>
-      <div className='Post-Footer-Rating'>{getRatingString(props)}</div>
+      <div className={styles['Post-Footer-Rating']}>{getRatingString(props)}</div>
     </div>
   );
 }

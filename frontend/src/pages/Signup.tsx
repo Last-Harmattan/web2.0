@@ -1,15 +1,14 @@
 import React from 'react';
-import { Banner } from './component/Banner';
-import { Button } from './component/Button';
-import { TextInput, TextInputType } from './component/TextInput';
-import './Signup.css';
+import { Link } from 'react-router-dom';
+import { Button } from '../component/Button';
+import { TextInput, TextInputType } from '../component/TextInput';
+import styles from './Signup.module.css';
 
 export function Signup() {
   return (
     <div>
-      <Banner></Banner>
-      <div className='Center'>
-        <div className='Heading'>Registrieren</div>
+      <div className={styles['Center']}>
+        <div className={styles['Heading']}>Registrieren</div>
         <div>
           <TextInput placeholder={'Nutzername'} type={TextInputType.TEXT}></TextInput>
         </div>
@@ -19,13 +18,12 @@ export function Signup() {
         <div>
           <TextInput placeholder={'Passwort wiederholen'} type={TextInputType.PASSWORD}></TextInput>
         </div>
-        <div className='Button-Margin'>
+        <div className={styles['Button-Margin']}>
           <Button label={'Registrieren'}></Button>
         </div>
-        <a href='loginpage.com' className='Login-Link'>
-          {/*durch den Link ersetzen, der zur Anmeldung führt*/}
+        <Link to='/login' className={styles['Login-Link']}>
           Anmelden
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import './Post.css';
+import styles from './Post.module.css';
 import { PostContent } from './PostContent';
 import { PostFooter } from './PostFooter';
 import { PostHeader } from './PostHeader';
@@ -14,7 +14,7 @@ interface PostProps {
 }
 
 export function Post(props: PostProps) {
-  const className = props.isComment ? 'Comment' : 'Post';
+  const className = props.isComment ? styles.Comment : styles.Post;
 
   return (
     <div className={className}>
