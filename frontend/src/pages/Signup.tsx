@@ -12,10 +12,10 @@ export function Signup() {
           <TextInput placeholder={'Nutzername'} type={TextInputType.TEXT}></TextInput>
         </div>
         <div>
-          <TextInput placeholder={'Passwort'} type={TextInputType.PASSWORD}></TextInput>
+          <TextInput placeholder={'Public Key'} type={TextInputType.TEXT}></TextInput>
         </div>
         <div>
-          <TextInput placeholder={'Passwort wiederholen'} type={TextInputType.PASSWORD}></TextInput>
+          <TextInput placeholder={'Private Key'} type={TextInputType.PASSWORD}></TextInput>
         </div>
         <div className={styles['Button-Margin']}>
           <Button label={'Registrieren'}></Button>
