@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import styles from './Button.module.css';
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
 }
 
 export function Button(props: ButtonProps) {
-  return <button className={styles.button}>{props.label}</button>;
+  const { label, ...htmlProps } = props;
+  return (
+    <button className={styles.button} {...htmlProps}>
+      {props.label}
+    </button>
+  );
 }
