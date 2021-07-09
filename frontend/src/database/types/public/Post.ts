@@ -2,7 +2,7 @@ import { Comment } from './Comment';
 
 /**
  * @interface Post
- * @member _id - Id of the post
+ * @member _id - Id of the post in the database
  * @member author - Name of the author of these post
  * @member date - Date on that the post was written
  * @member content - Content of the post
