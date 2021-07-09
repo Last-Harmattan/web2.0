@@ -1,12 +1,11 @@
 import PouchDB from 'pouchdb-browser';
 import find from 'pouchdb-find';
-import { UserDBTypeMapper } from './UserDBTypeMapper';
 import { DbEntryMethaData } from './types/internal/DbEntryMethaData';
-import { FindResults } from './types/internal/FindResults';
-import { UserDataDB } from './types/internal/UserDataDB';
 import { FriendDB } from './types/internal/FriendDB';
-import { UserData } from './types/public/UserData';
+import { UserDataDB } from './types/internal/UserDataDB';
 import { Friend } from './types/public/Friend';
+import { UserData } from './types/public/UserData';
+import { UserDBTypeMapper } from './UserDBTypeMapper';
 
 PouchDB.plugin(find);
 
@@ -16,7 +15,7 @@ PouchDB.plugin(find);
  * @class
  */
 export class UserDatabase {
-  private db: PouchDB.Database<{}>;
+  private db: PouchDB.Database<UserDataDB | FriendDB>;
 
   constructor() {
     this.db = new PouchDB('Web20DB_USER_DB');
@@ -49,7 +48,7 @@ export class UserDatabase {
    * @returns
    */
   updateUserData(userData: UserData): Promise<DbEntryMethaData> {
-    return this.db.get<UserDataDB>(userData._id!).then((userDataDB: UserDataDB) => {
+    return this.db.get<UserDataDB>(userData._id!).then(userDataDB => {
       userDataDB.userID = userData.userID;
       userDataDB.lastOnline = userData.lastOnline;
       userDataDB.privateKey = userData.privateKey;
@@ -67,15 +66,13 @@ export class UserDatabase {
    * @returns {Promise<DbEntryMethaData | null}
    */
   getUserData(): Promise<UserData | null> {
-    return this.db
-      .find({ selector: { type: 'userData' } })
-      .then(function onSuccess(findResult: FindResults) {
-        if (findResult.docs.length == 0) {
-          return null;
-        } else {
-          return UserDBTypeMapper.mapToUserData(findResult.docs[0]);
-        }
-      });
+    return this.db.find({ selector: { type: 'userData' } }).then(function onSuccess(findResult) {
+      if (findResult.docs.length == 0) {
+        return null;
+      } else {
+        return UserDBTypeMapper.mapToUserData(findResult.docs[0] as UserDataDB);
+      }
+    });
   }
 
   /**
@@ -85,7 +82,7 @@ export class UserDatabase {
    * @returns {Promise<DbEntryMethaData>} Promise with the result of the database action
    */
   deleteUserData(id: string): Promise<DbEntryMethaData> {
-    return this.db.get<UserDataDB>(id).then((userDataDB: UserDataDB) => {
+    return this.db.get<UserDataDB>(id).then(userDataDB => {
       return this.db.remove({ _id: userDataDB._id!, _rev: userDataDB._rev! });
     });
   }
@@ -115,12 +112,13 @@ export class UserDatabase {
    * @returns {Promise<DbEntryMethaData>} Promise with the result of the database action
    */
   updateFriend(friend: Friend): Promise<DbEntryMethaData> {
-    return this.db.get<FriendDB>(friend._id!).then((friendDB: FriendDB) => {
-      friendDB.lastOnline = friend.lastOnline;
-      friendDB.userId = friend.userId;
-      friendDB.userName = friend.userName;
-
-      return this.db.put(friendDB);
+    return this.db.get(friend._id!).then(friendDB => {
+      return this.db.put({
+        ...friendDB,
+        lastOnline: friend.lastOnline,
+        userId: friend.userId,
+        userName: friend.userName,
+      });
     });
   }
 
@@ -131,8 +129,8 @@ export class UserDatabase {
    * @returns {Promise<Friend>} Promise with either the friend object or an error object
    */
   getFriend(_id: string): Promise<Friend> {
-    return this.db.get<FriendDB>(_id).then(function onSuccess(friendDB: FriendDB) {
-      return UserDBTypeMapper.mapToFriend(friendDB);
+    return this.db.get(_id).then(function onSuccess(friendDB) {
+      return UserDBTypeMapper.mapToFriend(friendDB as FriendDB);
     });
   }
 
@@ -143,15 +141,13 @@ export class UserDatabase {
    * @returns {Promise<Array<Friend> | null>}
    */
   getAllFriends(): Promise<Array<Friend> | null> {
-    return this.db
-      .find({ selector: { type: 'friend' } })
-      .then(function onSuccess(findResults: FindResults) {
-        if (findResults.docs.length == 0) {
-          return null;
-        } else {
-          return UserDBTypeMapper.mapFriendsDBToFriends(findResults.docs);
-        }
-      });
+    return this.db.find({ selector: { type: 'friend' } }).then(function onSuccess(findResults) {
+      if (findResults.docs.length == 0) {
+        return null;
+      } else {
+        return UserDBTypeMapper.mapFriendsDBToFriends(findResults.docs as FriendDB[]);
+      }
+    });
   }
 
   /**
@@ -161,7 +157,7 @@ export class UserDatabase {
    * @returns {Promise<Friend>} Promise with either the friend object or an error object
    */
   deleteFriend(id: string): Promise<DbEntryMethaData> {
-    return this.db.get<FriendDB>(id).then((friendDB: FriendDB) => {
+    return this.db.get(id).then(friendDB => {
       return this.db.remove({ _id: friendDB._id!, _rev: friendDB._rev! });
     });
   }
