@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '../component/Post';
 import { PostInputField } from '../component/PostInputField';
@@ -15,12 +15,22 @@ export function Feed() {
     // Initialize all required stores.
     dispatch(initPosts());
   }, [dispatch]);
-
   const posts = useSelector((state: RootState) => state.posts.posts);
+  const [newPostContent, setNewPostContent] = useState('');
+
+  const handlePostInputSubmit = () => {
+    console.warn('TODO submit:', newPostContent);
+  };
 
   return (
     <div className={styles.Center}>
-      <PostInputField placeholder={'Was möchtest du sagen?'} maxChars={200} />
+      <PostInputField
+        placeholder='Was möchtest du sagen?'
+        maxChars={200}
+        value={newPostContent}
+        onChangeValue={value => setNewPostContent(value)}
+        onSubmit={handlePostInputSubmit}
+      />
 
       {posts.map(p => (
         <Post
