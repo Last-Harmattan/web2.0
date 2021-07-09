@@ -5,13 +5,11 @@ import { Banner } from './component/Banner';
 import { Feed } from './pages/Feed';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
-import { TestSidePostCommentDB } from './database/TestSidePostCommentDB';
 
 const customHistory = createBrowserHistory();
 export function App() {
   const [isLoggedIn, setLoggedIn] = useState(true);
 
-  /*
   return (
     <div>
       <Router history={customHistory}>
@@ -25,7 +23,4 @@ export function App() {
       </Router>
     </div>
   );
-  */
-
-  return <TestSidePostCommentDB></TestSidePostCommentDB>;
 }
