@@ -1,13 +1,15 @@
 import { createBrowserHistory } from 'history';
-import React, { useState } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { Banner } from './component/Banner';
 import { Feed } from './pages/Feed';
 import { Signup } from './pages/Signup';
+import { RootState } from './state/reducers';
 
 const customHistory = createBrowserHistory();
 export function App() {
-  const [isLoggedIn, setLoggedIn] = useState(true);
+  const isLoggedIn = useSelector((state: RootState) => !!state.user.currentUser);
 
   return (
     <div>
