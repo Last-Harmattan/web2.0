@@ -67,7 +67,7 @@ export class UserDatabase {
    */
   getUserData(): Promise<UserData | null> {
     return this.db.find({ selector: { type: 'userData' } }).then(function onSuccess(findResult) {
-      if (findResult.docs.length == 0) {
+      if (findResult.docs.length === 0) {
         return null;
       } else {
         return UserDBTypeMapper.mapToUserData(findResult.docs[0] as UserDataDB);
@@ -142,7 +142,7 @@ export class UserDatabase {
    */
   getAllFriends(): Promise<Array<Friend> | null> {
     return this.db.find({ selector: { type: 'friend' } }).then(function onSuccess(findResults) {
-      if (findResults.docs.length == 0) {
+      if (findResults.docs.length === 0) {
         return null;
       } else {
         return UserDBTypeMapper.mapFriendsDBToFriends(findResults.docs as FriendDB[]);
