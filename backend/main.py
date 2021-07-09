@@ -132,6 +132,15 @@ def friendReq():
     con.commit()
 
 
+@app.route('/api/call/getfriendreq', method="GET")
+@app.route('/api/call/getFriendReq', method="GET")
+def getfriendReq():
+    id = request.query['ID']
+    cur.execute("select friendA from friendReq where friendB = ?", [id])
+    content=cur.fetchall()
+    response.headers['Content-Type'] = 'application/json'
+    return(json.dumps(content))
+
 
 init()
 
