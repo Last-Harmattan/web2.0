@@ -5,6 +5,7 @@ import { Comment } from '../types/public/Comment';
 export function testSaveNewPost(post: Post) {
   console.log('Start store new post test');
 
+  /*
   let comment1: Comment = {
     author: 'author1',
     date: '2021-07-09T13:02:09.339Z',
@@ -41,6 +42,7 @@ export function testSaveNewPost(post: Post) {
   post.comments.push(comment2);
   post.comments.push(comment3);
   post.comments.push(comment4);
+*/
 
   let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
   dbWrapper.saveNewPost(post).then(

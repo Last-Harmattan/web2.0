@@ -14,7 +14,7 @@ export interface Post {
   author: string;
   date: string; //ISO-8601
   content: string;
-  likes: Number;
-  dislikes: Number;
+  likes: number | null;
+  dislikes: number | null;
   comments: Array<Comment>;
 }

@@ -53,8 +53,8 @@ export class TestSidePostCommentDB extends React.Component {
   };
 
   genericTest = () => {
-    PostCommentTests.genericTestMethod();
-    //console.log(new Date().toISOString())
+    //PostCommentTests.genericTestMethod();
+    console.log(new Date().toISOString());
   };
 
   private readPostInfos(): Post {

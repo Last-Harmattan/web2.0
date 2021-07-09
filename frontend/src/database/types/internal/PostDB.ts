@@ -19,6 +19,6 @@ export interface PostDB {
   author: string;
   date: string;
   content: string;
-  likes: Number;
-  dislikes: Number;
+  likes: number | null;
+  dislikes: number | null;
 }

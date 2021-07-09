@@ -29,26 +29,30 @@ export class CommentDBWrapper {
 
   /**
   Stores the passed post object and its containing comment objects in the database.
+
   Returns a promise of a list where an entry can be a MetaDataObject or an error
   The Ids that are returned are the Ids that are assingend to the post and the comments
   in the database.
-  On the first place of the Array is the result for the post. The following
-  entires are in the same order the comments were in the post object.
+  On the first place of the Array is the result for the post.
+  
+  If storing of comment is enabled:
+  The following entires are in the same order the comments were in the post object.
   Set these Ids in the post and comment objects that are originally passed to
   the function on your side!
   Ids are required for editing and deletion of objects in the database.
    * 
    * @param post - Post that shall be stored in the database.
-   * @returns {Promise<(DbEntryMethaData | PouchDB.Core.Error)[]>}
+   * @returns {Promise<(DbEntryMethaData>} With the status of the db action
   */
   saveNewPost(post: Post): Promise<(DbEntryMethaData | PouchDB.Core.Error)[]> {
+    post.comments = [];
     const postDb: PostDB = {
       type: 'post',
       author: post.author,
       date: post.date,
       content: post.content,
-      likes: post.likes,
-      dislikes: post.dislikes,
+      likes: null,
+      dislikes: null,
     };
 
     return this.db.post(postDb).then((metaData: DbEntryMethaData) => {
@@ -107,8 +111,8 @@ export class CommentDBWrapper {
       postDb.author = post.author;
       postDb.content = post.content;
       postDb.date = post.date;
-      postDb.likes = post.likes;
-      postDb.dislikes = post.dislikes;
+      postDb.likes = null;
+      postDb.dislikes = null;
       return this.db.put(postDb);
     });
   }
@@ -138,10 +142,10 @@ export class CommentDBWrapper {
       postId: postId,
       type: 'comment',
       author: comment.author,
-      date: 'date',
+      date: comment.date,
       content: comment.content,
-      likes: comment.likes,
-      dislikes: comment.dislikes,
+      likes: null,
+      dislikes: null,
     };
 
     return this.db.post(newCommentDb);
@@ -161,8 +165,8 @@ export class CommentDBWrapper {
       commentDb.author = comment.author;
       commentDb.content = comment.content;
       commentDb.date = comment.date;
-      commentDb.likes = comment.likes;
-      commentDb.dislikes = comment.dislikes;
+      commentDb.likes = null;
+      commentDb.dislikes = null;
 
       return this.db.put(commentDb);
     });

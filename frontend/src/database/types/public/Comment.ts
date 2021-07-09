@@ -14,6 +14,6 @@ export interface Comment {
   author: string;
   date: string; //ISO-8601
   content: string;
-  likes: number;
-  dislikes: number;
+  likes: number | null;
+  dislikes: number | null;
 }
