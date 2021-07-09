@@ -1,6 +1,6 @@
 import PouchDB from 'pouchdb-browser';
 import find from 'pouchdb-find';
-import { DbTypeMapper } from './DbTypeMapper';
+import { DbTypeMapper } from './Utils/DbTypeMapper';
 import { CommentDB } from './types/internal/CommentDb';
 import { DbEntryMethaData } from './types/internal/DbEntryMethaData';
 import { PostDB } from './types/internal/PostDB';
@@ -47,8 +47,8 @@ export class CommentDBWrapper {
       author: post.author,
       date: post.date,
       content: post.content,
-      likes: null,
-      dislikes: null,
+      likes: post.likes,
+      dislikes: post.dislikes,
     };
 
     return this.db.post(postDb).then(metaData => {
@@ -103,8 +103,8 @@ export class CommentDBWrapper {
       postDb.author = post.author;
       postDb.content = post.content;
       postDb.date = post.date;
-      postDb.likes = null;
-      postDb.dislikes = null;
+      postDb.likes = post.likes;
+      postDb.dislikes = post.dislikes;
       return this.db.put(postDb);
     });
   }
@@ -136,8 +136,8 @@ export class CommentDBWrapper {
       author: comment.author,
       date: comment.date,
       content: comment.content,
-      likes: null,
-      dislikes: null,
+      likes: comment.likes,
+      dislikes: comment.dislikes,
     };
 
     return this.db.post(newCommentDb);
@@ -157,8 +157,8 @@ export class CommentDBWrapper {
       commentDb.author = comment.author;
       commentDb.content = comment.content;
       commentDb.date = comment.date;
-      commentDb.likes = null;
-      commentDb.dislikes = null;
+      commentDb.likes = comment.likes;
+      commentDb.dislikes = comment.dislikes;
 
       return this.db.put(commentDb);
     });

@@ -23,6 +23,6 @@ export interface CommentDB {
   author: string;
   date: string;
   content: string;
-  likes: number | null;
-  dislikes: number | null;
+  likes: number;
+  dislikes: number;
 }
