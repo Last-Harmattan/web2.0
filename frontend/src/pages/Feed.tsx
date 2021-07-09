@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '../component/Post';
 import { PostInputField } from '../component/PostInputField';
 import { TestSidePostCommentDB } from '../database/TestSidePostCommentDB';
-import { initPosts } from '../state/postsSlice';
 import { RootState } from '../state/reducers';
 import { AppDispatch } from '../state/store';
 import styles from './Feed.module.css';
 
 export function Feed() {
   const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    // Initialize all required stores.
-    dispatch(initPosts());
-  }, [dispatch]);
   const posts = useSelector((state: RootState) => state.posts.posts);
   const [newPostContent, setNewPostContent] = useState('');
 

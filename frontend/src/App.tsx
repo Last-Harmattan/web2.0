@@ -5,6 +5,8 @@ import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { Banner } from './component/Banner';
 import { Feed } from './pages/Feed';
 import { Signup } from './pages/Signup';
+import { initFriends } from './state/friendsSlice';
+import { initPosts } from './state/postsSlice';
 import { RootState } from './state/reducers';
 import { AppDispatch } from './state/store';
 import { initUser } from './state/userSlice';
@@ -16,8 +18,10 @@ export function App() {
   const isLoggedIn = useSelector((state: RootState) => !!state.user.currentUser);
 
   useEffect(() => {
-    // We need the user state everywhere in our app so initialize it here.
-    dispatch(initUser());
+    // Initialize all stores.
+    dispatch(initUser())
+      .then(() => dispatch(initFriends()))
+      .then(() => dispatch(initPosts()));
   }, [dispatch]);
 
   return (
