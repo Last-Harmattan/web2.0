@@ -131,3 +131,9 @@ export function deleteDatabaseTest() {
     }
   );
 }
+
+export function genericTest() {
+  const date = new Date('Tue, 21 Apr 2020 09:20:30 GMT');
+
+  console.log(date.toISOString());
+}

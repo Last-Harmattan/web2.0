@@ -58,6 +58,10 @@ export class UserDbTestComponent extends React.Component {
     UserDbTests.deleteDatabaseTest();
   };
 
+  genericTest = () => {
+    UserDbTests.genericTest();
+  };
+
   private readUserData(): UserData {
     let dbId = (document.getElementById('UserDataDbId') as HTMLInputElement).value;
     let userID = (document.getElementById('UserDataUserId') as HTMLInputElement).value;
@@ -154,6 +158,10 @@ export class UserDbTestComponent extends React.Component {
         <br></br>
 
         <button onClick={this.deleteDatabase}>Delete Database</button>
+        <br></br>
+        <br></br>
+
+        <button onClick={this.genericTest}>GenericTest</button>
       </>
     );
   }

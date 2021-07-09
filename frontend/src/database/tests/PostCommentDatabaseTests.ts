@@ -7,7 +7,7 @@ export function testSaveNewPost(post: Post) {
 
   let comment1: Comment = {
     author: 'author1',
-    date: '1:00',
+    date: '2021-07-09T13:02:09.339Z',
     content: 'Comment1',
     likes: 420,
     dislikes: 69,
@@ -15,7 +15,7 @@ export function testSaveNewPost(post: Post) {
 
   let comment2: Comment = {
     author: 'author2',
-    date: '2:00',
+    date: '2021-04-09T13:02:09.339Z',
     content: 'Comment1',
     likes: 123,
     dislikes: 123,
@@ -23,7 +23,7 @@ export function testSaveNewPost(post: Post) {
 
   let comment3: Comment = {
     author: 'author3',
-    date: '3:00',
+    date: '2025-07-09T13:02:09.339Z',
     content: 'Comment3',
     likes: 1,
     dislikes: 5,
@@ -31,7 +31,7 @@ export function testSaveNewPost(post: Post) {
 
   let comment4: Comment = {
     author: 'author4',
-    date: '4:00',
+    date: '2021-07-01T13:02:09.339Z',
     content: 'Comment4',
     likes: 4,
     dislikes: 3,
@@ -84,21 +84,46 @@ export function testGetPost(id: string) {
 export function resetDatabaseTest() {
   let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
 
-  dbWrapper.destroyDatabase();
+  dbWrapper.destroyDatabase().then(
+    function onSuccess(result) {
+      console.log(result);
+    },
+    function onFailure(error) {
+      console.log(error);
+    }
+  );
 }
 
-export function addCommentToPostTest() {
+export function addCommentToPostTest(postID: string, comment: Comment) {
   let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
 
-  let comment: Comment = {
-    author: 'Ein Anderer',
-    content: 'Das hier ist ein Kommentar',
-    likes: 420,
-    dislikes: 69,
-    date: 'Heute',
-  };
+  dbWrapper.addCommentToPost(postID, comment).then(
+    function onSuccess(result) {
+      console.log(result);
+    },
+    function onFailure(error) {
+      console.log(error);
+    }
+  );
+}
 
-  dbWrapper.addCommentToPost('3e91dc5b-591e-423c-a5ef-388965160a32', comment).then(
+export function getCommentByIdTest(id: string) {
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
+
+  dbWrapper.getCommentsToPost(id).then(
+    function onSuccess(result) {
+      console.log(result);
+    },
+    function onFailure(error) {
+      console.log(error);
+    }
+  );
+}
+
+export function updateCommentTest(comment: Comment) {
+  let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
+
+  dbWrapper.updateComment(comment).then(
     function onSuccess(result) {
       console.log(result);
     },

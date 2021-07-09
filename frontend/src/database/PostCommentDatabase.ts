@@ -5,7 +5,7 @@ import { PostDB } from './types/internal/PostDB';
 import { CommentDB } from './types/internal/CommentDb';
 import { FindResults } from './types/internal/FindResults';
 import { Comment } from './types/public/Comment';
-import { DbTypeMapper } from './DbTypeMapper';
+import { DbTypeMapper } from './Utils/DbTypeMapper';
 import { DbEntryMethaData } from './types/internal/DbEntryMethaData';
 
 PouchDB.plugin(find);
