@@ -9,8 +9,8 @@
  * @member author - Name of the author of these post
  * @member date - Date on that the post was written
  * @member content - Content of the post
- * @member likes - Number of likes of the post
- * @member dislikes - Number of dislikes of the post
+ * @member likes - number of likes of the post
+ * @member dislikes - number of dislikes of the post
  */
 export interface PostDB {
   _id?: string;
@@ -19,6 +19,6 @@ export interface PostDB {
   author: string;
   date: string;
   content: string;
-  likes: Number;
-  dislikes: Number;
+  likes: number;
+  dislikes: number;
 }
