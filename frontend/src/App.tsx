@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { Banner } from './component/Banner';
 import { Feed } from './pages/Feed';
-import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 
 const customHistory = createBrowserHistory();
@@ -16,9 +15,8 @@ export function App() {
         <Banner></Banner>
 
         <Switch>
-          <Route path='/login'>{isLoggedIn ? <Redirect to='/' /> : <Login />}</Route>
           <Route path='/signup'>{isLoggedIn ? <Redirect to='/' /> : <Signup />}</Route>
-          <Route path='/'>{isLoggedIn ? <Feed /> : <Redirect to='/login' />}</Route>
+          <Route path='/'>{isLoggedIn ? <Feed /> : <Redirect to='/signup' />}</Route>
         </Switch>
       </Router>
     </div>
