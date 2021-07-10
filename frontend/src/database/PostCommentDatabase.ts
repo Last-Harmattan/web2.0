@@ -6,6 +6,8 @@ import { DbEntryMethaData } from './types/internal/DbEntryMethaData';
 import { PostDB } from './types/internal/PostDB';
 import { Comment } from './types/public/Comment';
 import { Post } from './types/public/Post';
+import { FindResults } from './types/internal/FindResults';
+import { NewestPostInfo } from './types/internal/NewestPostInfo';
 
 PouchDB.plugin(find);
 
@@ -20,7 +22,7 @@ PouchDB.plugin(find);
  *
  **/
 export class CommentDBWrapper {
-  private db: PouchDB.Database<PostDB | CommentDB>;
+  private db: PouchDB.Database<PostDB | CommentDB | NewestPostInfo>;
 
   constructor() {
     this.db = new PouchDB('Web20DB');
@@ -99,7 +101,7 @@ export class CommentDBWrapper {
   }
 
   updatePost(post: Post): Promise<DbEntryMethaData> {
-    return this.db.get(post._id!).then((postDb: PostDB) => {
+    return this.db.get<PostDB>(post._id!).then((postDb: PostDB) => {
       postDb.author = post.author;
       postDb.content = post.content;
       postDb.date = post.date;
@@ -110,22 +112,51 @@ export class CommentDBWrapper {
   }
 
   getPostById(id: string): Promise<Post> {
-    return this.db.get(id).then(post => {
+    return this.db.get<PostDB>(id).then(post => {
       return this.getCommentsToPost(id).then(comments => DbTypeMapper.mapPost(post, comments));
     });
   }
 
   getAllPosts(): Promise<Post[]> {
-    return this.db.find({ selector: { type: 'post' } }).then(result =>
+    return this.db.find({ selector: { type: 'post' } }).then(result => {
       // For each post (of type PostDB) load his comments (of type Comment[]).
       // When the inner promise to load the comments resolves, put them together into one Post
       // object.
-      Promise.all(
-        result.docs.map(post =>
-          this.getCommentsToPost(post._id).then(comments => DbTypeMapper.mapPost(post, comments))
+      return Promise.all(
+        (result.docs as PostDB[]).map((post: PostDB) =>
+          this.getCommentsToPost(post._id!).then(comments => DbTypeMapper.mapPost(post, comments))
         )
-      )
-    );
+      );
+    });
+  }
+
+  getPostsAfterTimeFromUser(iso8061DateString: string): Promise<Post[]> {
+    return this.db
+      .find({ selector: { type: 'post', date: { $gt: iso8061DateString } } })
+      .then((result: FindResults) => {
+        return DbTypeMapper.mapPosts(result.docs);
+      });
+  }
+
+  updateNewestPostInfo(timeStampIso8061: string): Promise<DbEntryMethaData> {
+    let newestPostInfo: NewestPostInfo = {
+      type: 'newestPostInfo',
+      timeStamp: timeStampIso8061,
+    };
+
+    return this.db.post(newestPostInfo);
+  }
+
+  getNewestPostTimeStamp(): Promise<string> {
+    return this.db
+      .find({ selector: { type: 'newestPostInfo' } })
+      .then(function onSuccess(findResult: FindResults) {
+        if (findResult.docs.length === 0) {
+          return '';
+        } else {
+          return findResult.docs[0].timeStamp;
+        }
+      });
   }
 
   addCommentToPost(postId: string, comment: Comment): Promise<DbEntryMethaData> {
@@ -153,7 +184,7 @@ export class CommentDBWrapper {
   }
 
   updateComment(comment: Comment): Promise<DbEntryMethaData> {
-    return this.db.get(comment._id!).then(commentDb => {
+    return this.db.get<PostDB>(comment._id!).then(commentDb => {
       commentDb.author = comment.author;
       commentDb.content = comment.content;
       commentDb.date = comment.date;

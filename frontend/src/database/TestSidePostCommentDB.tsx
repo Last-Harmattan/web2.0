@@ -52,9 +52,13 @@ export class TestSidePostCommentDB extends React.Component {
     PostCommentTests.resetDatabaseTest();
   };
 
+  postsAfterTime = () => {
+    PostCommentTests.getAllPostsAfterTime();
+  };
+
   genericTest = () => {
-    //PostCommentTests.genericTestMethod();
-    console.log(new Date().toISOString());
+    PostCommentTests.genericTestMethod();
+    //console.log(new Date().toISOString()); //2021-07-10T09:48:50.609Z
   };
 
   private readPostInfos(): Post {
@@ -181,6 +185,7 @@ export class TestSidePostCommentDB extends React.Component {
         <br></br>
         <br></br>
 
+        <button onClick={this.postsAfterTime}>PostsAfterTime</button>
         <button onClick={this.genericTest}>Generic Test</button>
       </>
     );

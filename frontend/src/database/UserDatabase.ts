@@ -16,7 +16,7 @@ PouchDB.plugin(find);
  * @class
  */
 export class UserDatabase {
-  private db: PouchDB.Database<{}>;
+  private db: PouchDB.Database<UserDataDB | FriendDB>;
 
   constructor() {
     this.db = new PouchDB('Web20DB_USER_DB');
@@ -70,7 +70,7 @@ export class UserDatabase {
     return this.db
       .find({ selector: { type: 'userData' } })
       .then(function onSuccess(findResult: FindResults) {
-        if (findResult.docs.length == 0) {
+        if (findResult.docs.length === 0) {
           return null;
         } else {
           return UserDBTypeMapper.mapToUserData(findResult.docs[0]);
@@ -137,6 +137,36 @@ export class UserDatabase {
   }
 
   /**
+   * Returns the timeStamp the friend was last online
+   *
+   * @param _id Id of the friend in the database
+   * @returns
+   */
+  getTimeStampFriendWasLastOnline(_id: string): Promise<string> {
+    return this.db.get<FriendDB>(_id).then(function onSuccess(friend: FriendDB) {
+      return friend.lastOnline;
+    });
+  }
+
+  /**
+   * Updates the TimeStamp of the Friend was last online
+   *
+   * @param _id Id of the friend in the Database
+   * @param iso8061DateString Timespamp to be stored in ISO-8061
+   * @returns
+   */
+  updateTimeStampFriendWasLastOnline(
+    _id: string,
+    iso8061DateString: string
+  ): Promise<DbEntryMethaData> {
+    return this.db.get<FriendDB>(_id).then((friend: FriendDB) => {
+      friend.lastOnline = iso8061DateString;
+
+      return this.db.put(friend);
+    });
+  }
+
+  /**
    * Returns a list of all friends in the database
    * Returns null if no friends are in the database.
    *
@@ -146,7 +176,7 @@ export class UserDatabase {
     return this.db
       .find({ selector: { type: 'friend' } })
       .then(function onSuccess(findResults: FindResults) {
-        if (findResults.docs.length == 0) {
+        if (findResults.docs.length === 0) {
           return null;
         } else {
           return UserDBTypeMapper.mapFriendsDBToFriends(findResults.docs);

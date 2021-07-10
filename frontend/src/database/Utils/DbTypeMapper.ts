@@ -18,6 +18,13 @@ export class DbTypeMapper {
     };
   }
 
+  static mapPosts(postsDb: PostDB[]): Post[] {
+    let posts: Post[] = postsDb.map(post => this.mapPost(post, []));
+    SortingUtils.sortByIso8061Date(posts);
+
+    return posts;
+  }
+
   static mapComment(commentDb: CommentDB): Comment {
     return {
       _id: commentDb._id,
