@@ -108,7 +108,7 @@ def upPublicKey():
     key.save(file_path)
 
 # route for update user location
-@app.route('/api/call/uplocation', method="GET")
+@app.route('/api/call/uplocation', method="POST")
 def upLocation():
     location = request.query['LOCATION']
     id = request.query['ID']
@@ -127,18 +127,12 @@ def getLocation():
             re.append({"LOCATION":e[0]})
         return(json.dumps(re))
 
-    id = request.query['ID']
-    getfrom = request.query['GETFROM']
-    cur.execute("select accept from friendReq where friendA = ? and friendB = ?", [id, getfrom])
+    cur.execute("select location from users where id = ?", [getfrom])
     content=cur.fetchall()
+    return(queryToJSON(content))
 
-    if(content[0][0]):
-        cur.execute("select location from users where id = ?", [getfrom])
-        content=cur.fetchall()
-        return(json.dumps(content))
-
-@app.route('/api/call/friendreq', method="GET")
-@app.route('/api/call/friendReq', method="GET")
+@app.route('/api/call/friendreq', method="POST")
+@app.route('/api/call/friendReq', method="POST")
 def friendReq():
     friendA = request.query['FROM']
     friendB = request.query['TO']
