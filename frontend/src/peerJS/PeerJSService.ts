@@ -12,9 +12,19 @@ export class PeerJSService {
   peer: Peer | null = null;
   connection: DataConnection | null = null; // für den Prototypen gibt es nur eine Connection allerdings wären mehrere nicht nur möglich sondern auch empfehlenswert
 
-  onConnected: ((connected: boolean) => void) | null = null;
-  onMessageReceived: ((data: string) => void) | null = null;
-  onPeerOpened: ((id: string) => void) | null = null;
+  onConnected: (connected: boolean) => void;
+  onMessageReceived: (data: string) => void;
+  onPeerOpened: (id: string) => void;
+
+  constructor(
+    onConnected: (connected: boolean) => void,
+    onMessageReceived: (data: string) => void,
+    onPeerOpened: (id: string) => void
+  ) {
+    this.onConnected = onConnected;
+    this.onMessageReceived = onMessageReceived;
+    this.onPeerOpened = onPeerOpened;
+  }
 
   /**
    * opens a new peer when there is no one currently open
@@ -48,22 +58,18 @@ export class PeerJSService {
     this.connection?.send(message);
   }
 
+  public isConnected(): boolean {
+    return this.connection != null;
+  }
+
   /**
    * creates a new Peer and sets the callback functions
    */
   private openNewPeer() {
     this.clearAll();
     this.peer = new Peer(undefined, { debug: 2 });
-    this.peer.on('open', this.onPeerOpen);
+    this.peer.on('open', this.onPeerOpened!!);
     this.peer.on('disconnected', this.onPeerDisconnected);
-  }
-
-  /**
-   * handles new PeerJS-Id
-   * @param id - PeerJS-ID of own peer
-   */
-  private onPeerOpen(id: string) {
-    this.onPeerOpened?.(id);
   }
 
   /**
@@ -118,7 +124,7 @@ export class PeerJSService {
    * destoyes peer and removes the reference
    */
   private destroyPeer() {
-    this.peer?.destroy;
+    this.peer?.destroy();
     this.peer = null;
   }
 }

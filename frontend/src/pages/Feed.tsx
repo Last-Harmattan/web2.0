@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '../component/Post';
 import { PostInputField } from '../component/PostInputField';
-import { TestSidePostCommentDB } from '../database/TestSidePostCommentDB';
+import { PeerJSService } from '../peerJS/PeerJSService';
 import { addPost } from '../state/postsSlice';
 import { RootState } from '../state/reducers';
 import { AppDispatch } from '../state/store';
@@ -65,4 +65,29 @@ export function Feed() {
       ))}
     </div>
   );
+}
+
+let peerJSService: PeerJSService = new PeerJSService(onConnected, onMessageReceived, onPeerOpened);
+let connected: boolean = false;
+
+initPeerJSService();
+
+function initPeerJSService() {
+  peerJSService.openPeer();
+}
+
+function onPeerOpened(id: string) {
+  console.log('Opened Peer with id: ', id);
+}
+
+function onConnected(isConnected: boolean) {
+  connected = isConnected;
+}
+
+function onMessageReceived(data: string) {
+  console.log('Received Message: ', data);
+}
+
+function onRefreshClicked() {
+  console.log('Button Clicked');
 }
