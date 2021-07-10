@@ -11,7 +11,7 @@
  */
 export interface Comment {
   _id?: string;
-  author: string;
+  authorId: string;
   date: string; //ISO-8601
   content: string;
   likes: number;

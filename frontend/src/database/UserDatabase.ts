@@ -1,5 +1,6 @@
 import PouchDB from 'pouchdb-browser';
 import find from 'pouchdb-find';
+import { AllDocumentsInterface, AllDocsError } from './types/internal/AllDocumentsInterface';
 import { DbEntryMethaData } from './types/internal/DbEntryMethaData';
 import { FriendDB } from './types/internal/FriendDB';
 import { UserDataDB } from './types/internal/UserDataDB';
@@ -29,8 +30,8 @@ export class UserDatabase {
    */
   saveNewUserData(userData: UserData): Promise<DbEntryMethaData> {
     const userDataDB: UserDataDB = {
+      _id: userData._id,
       type: 'userData',
-      userID: userData.userID,
       userName: userData.userName,
       lastOnline: userData.lastOnline,
       publicKey: userData.publicKey,
@@ -48,8 +49,7 @@ export class UserDatabase {
    * @returns
    */
   updateUserData(userData: UserData): Promise<DbEntryMethaData> {
-    return this.db.get<UserDataDB>(userData._id!).then(userDataDB => {
-      userDataDB.userID = userData.userID;
+    return this.db.get<UserDataDB>(userData._id).then(userDataDB => {
       userDataDB.lastOnline = userData.lastOnline;
       userDataDB.privateKey = userData.privateKey;
       userDataDB.publicKey = userData.publicKey;
@@ -95,8 +95,8 @@ export class UserDatabase {
    */
   addFriend(friend: Friend): Promise<DbEntryMethaData> {
     const friendDB: FriendDB = {
+      _id: friend._id,
       type: 'friend',
-      userId: friend.userId,
       userName: friend.userName,
       lastOnline: friend.lastOnline,
     };
@@ -116,7 +116,6 @@ export class UserDatabase {
       return this.db.put({
         ...friendDB,
         lastOnline: friend.lastOnline,
-        userId: friend.userId,
         userName: friend.userName,
       });
     });
@@ -125,13 +124,42 @@ export class UserDatabase {
   /**
    * Returns the Friend Object with the given Id
    *
-   * @param _id Id in the database NOT the userID
+   * @param _id Id of the friend
    * @returns {Promise<Friend>} Promise with either the friend object or an error object
    */
   getFriend(_id: string): Promise<Friend> {
     return this.db.get(_id).then(function onSuccess(friendDB) {
       return UserDBTypeMapper.mapToFriend(friendDB as FriendDB);
     });
+  }
+
+  /**
+   * Searches the database for the given ids and puts
+   * then into a map with the assigned username
+   *
+   * If a username is not found the key has the value "not_found",
+   * the username otherwise
+   *
+   * @param userIds Ids of the friends
+   */
+  getUsernamesToIds(userIds: string[]): Promise<Map<string, string>> {
+    return this.db
+      .allDocs({ include_docs: true, keys: userIds })
+      .then(function onSuccess(results: AllDocumentsInterface<FriendDB>) {
+        const idToNames: Map<string, string> = new Map<string, string>();
+
+        for (const result of results.rows) {
+          //can be asserted non null, because include_docs is set to true in query
+          if ('error' in result.doc!) {
+            result.doc as AllDocsError;
+            idToNames.set(result.doc.key, result.doc.error);
+          } else {
+            idToNames.set(result.doc!._id, result.doc!.userName);
+          }
+        }
+
+        return idToNames;
+      });
   }
 
   /**

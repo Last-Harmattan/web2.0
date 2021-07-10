@@ -64,7 +64,6 @@ export class UserDbTestComponent extends React.Component {
 
   private readUserData(): UserData {
     let dbId = (document.getElementById('UserDataDbId') as HTMLInputElement).value;
-    let userID = (document.getElementById('UserDataUserId') as HTMLInputElement).value;
     let userName = (document.getElementById('UserDataUserName') as HTMLInputElement).value;
     let lastOnline = (document.getElementById('UserDataLastOnline') as HTMLInputElement).value;
     let publicKey = (document.getElementById('UserDataPublicKey') as HTMLInputElement).value;
@@ -72,7 +71,6 @@ export class UserDbTestComponent extends React.Component {
 
     return {
       _id: dbId,
-      userID: userID,
       userName: userName,
       lastOnline: lastOnline,
       publicKey: publicKey,
@@ -82,13 +80,11 @@ export class UserDbTestComponent extends React.Component {
 
   private readFriend(): Friend {
     let dbId = (document.getElementById('FriendDbId') as HTMLInputElement).value;
-    let friendId = (document.getElementById('FriendId') as HTMLInputElement).value;
     let friendUserName = (document.getElementById('FriendUserName') as HTMLInputElement).value;
     let friendLastOnline = (document.getElementById('FriendLastOnline') as HTMLInputElement).value;
 
     return {
       _id: dbId,
-      userId: friendId,
       userName: friendUserName,
       lastOnline: friendLastOnline,
     };
@@ -102,10 +98,6 @@ export class UserDbTestComponent extends React.Component {
         <label>_id (Database ID)</label>
         <br></br>
         <input id='UserDataDbId'></input>
-        <br></br>
-        <label>UserId</label>
-        <br></br>
-        <input id='UserDataUserId'></input>
         <br></br>
         <label>UserName</label>
         <br></br>
@@ -134,10 +126,6 @@ export class UserDbTestComponent extends React.Component {
         <label>_id (Database ID)</label>
         <br></br>
         <input id='FriendDbId'></input>
-        <br></br>
-        <label>UserId</label>
-        <br></br>
-        <input id='FriendId'></input>
         <br></br>
         <label>UserName</label>
         <br></br>

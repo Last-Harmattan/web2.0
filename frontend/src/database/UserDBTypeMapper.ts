@@ -7,7 +7,6 @@ export class UserDBTypeMapper {
   static mapToUserData(userDataDB: UserDataDB): UserData {
     return {
       _id: userDataDB._id,
-      userID: userDataDB.userID,
       userName: userDataDB.userName,
       lastOnline: userDataDB.lastOnline,
       privateKey: userDataDB.privateKey,
@@ -22,7 +21,6 @@ export class UserDBTypeMapper {
   static mapToFriend(friendDB: FriendDB): Friend {
     return {
       _id: friendDB._id,
-      userId: friendDB.userId,
       userName: friendDB.userName,
       lastOnline: friendDB.lastOnline,
     };

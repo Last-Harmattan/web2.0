@@ -180,7 +180,7 @@ export function getAllPostsAfterTime() {
   const time: string = '2021-07-10T09:48:50.609Z';
   let dbWrapper: CommentDBWrapper = new CommentDBWrapper();
 
-  dbWrapper.getPostsAfterTimeFromUser(time).then(
+  dbWrapper.getPostsAfterTimeFromUser(time, 'Me').then(
     function onSuccess(result) {
       console.log(result);
     },

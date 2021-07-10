@@ -18,7 +18,7 @@ export interface PostDB {
   _rev?: string;
   _deleted?: boolean;
   type: string;
-  author: string;
+  authorId: string;
   date: string;
   content: string;
   likes: number;

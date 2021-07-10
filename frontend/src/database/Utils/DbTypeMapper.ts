@@ -9,7 +9,7 @@ export class DbTypeMapper {
     SortingUtils.sortByIso8061Date(comments);
     return {
       _id: postDb._id,
-      author: postDb.author,
+      authorId: postDb.authorId,
       date: postDb.date,
       content: postDb.content,
       likes: postDb.likes,
@@ -28,7 +28,7 @@ export class DbTypeMapper {
   static mapComment(commentDb: CommentDB): Comment {
     return {
       _id: commentDb._id,
-      author: commentDb.author,
+      authorId: commentDb.authorId,
       date: commentDb.date,
       content: commentDb.content,
       likes: commentDb.likes,

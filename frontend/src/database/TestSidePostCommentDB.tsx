@@ -71,7 +71,7 @@ export class TestSidePostCommentDB extends React.Component {
 
     return {
       _id: id,
-      author: author,
+      authorId: author,
       date: date,
       content: content,
       likes: +likes,
@@ -90,7 +90,7 @@ export class TestSidePostCommentDB extends React.Component {
 
     return {
       _id: id,
-      author: author,
+      authorId: author,
       date: date,
       content: content,
       likes: +likes,

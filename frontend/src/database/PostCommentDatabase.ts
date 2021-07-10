@@ -37,16 +37,16 @@ export class CommentDBWrapper {
    * entires are in the same order the comments were in the post object.
    * Set these Ids in the post and comment objects that are originally passed to
    * the function on your side!
-   * Ids are required for editing and deletion of objects in the database.
    *
    * @param post - Post that shall be stored in the database.
+   * @param isPostOfDbOwner - Indicates if this is a Post from the User and not one of his friends
    * @returns {Promise<(DbEntryMethaData | PouchDB.Core.Error)[]>}
    */
   saveNewPost(post: Post): Promise<(DbEntryMethaData | PouchDB.Core.Error)[]> {
     post.comments = [];
     const postDb: PostDB = {
       type: 'post',
-      author: post.author,
+      authorId: post.authorId,
       date: post.date,
       content: post.content,
       likes: post.likes,
@@ -60,7 +60,7 @@ export class CommentDBWrapper {
           type: 'comment',
           postId: metaData.id,
           date: comment.date,
-          author: comment.author,
+          authorId: comment.authorId,
           content: comment.content,
           likes: comment.likes,
           dislikes: comment.dislikes,
@@ -102,7 +102,7 @@ export class CommentDBWrapper {
 
   updatePost(post: Post): Promise<DbEntryMethaData> {
     return this.db.get<PostDB>(post._id!).then((postDb: PostDB) => {
-      postDb.author = post.author;
+      postDb.authorId = post.authorId;
       postDb.content = post.content;
       postDb.date = post.date;
       postDb.likes = post.likes;
@@ -130,32 +130,11 @@ export class CommentDBWrapper {
     });
   }
 
-  getPostsAfterTimeFromUser(iso8061DateString: string): Promise<Post[]> {
+  getPostsAfterTimeFromUser(iso8061DateString: string, authorId: string): Promise<Post[]> {
     return this.db
-      .find({ selector: { type: 'post', date: { $gt: iso8061DateString } } })
+      .find({ selector: { type: 'post', authorId: authorId, date: { $gt: iso8061DateString } } })
       .then((result: FindResults) => {
         return DbTypeMapper.mapPosts(result.docs);
-      });
-  }
-
-  updateNewestPostInfo(timeStampIso8061: string): Promise<DbEntryMethaData> {
-    let newestPostInfo: NewestPostInfo = {
-      type: 'newestPostInfo',
-      timeStamp: timeStampIso8061,
-    };
-
-    return this.db.post(newestPostInfo);
-  }
-
-  getNewestPostTimeStamp(): Promise<string> {
-    return this.db
-      .find({ selector: { type: 'newestPostInfo' } })
-      .then(function onSuccess(findResult: FindResults) {
-        if (findResult.docs.length === 0) {
-          return '';
-        } else {
-          return findResult.docs[0].timeStamp;
-        }
       });
   }
 
@@ -164,7 +143,7 @@ export class CommentDBWrapper {
     const newCommentDb: CommentDB = {
       postId: postId,
       type: 'comment',
-      author: comment.author,
+      authorId: comment.authorId,
       date: comment.date,
       content: comment.content,
       likes: comment.likes,
@@ -185,7 +164,7 @@ export class CommentDBWrapper {
 
   updateComment(comment: Comment): Promise<DbEntryMethaData> {
     return this.db.get<PostDB>(comment._id!).then(commentDb => {
-      commentDb.author = comment.author;
+      commentDb.authorId = comment.authorId;
       commentDb.content = comment.content;
       commentDb.date = comment.date;
       commentDb.likes = comment.likes;
