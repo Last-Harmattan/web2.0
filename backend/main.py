@@ -59,8 +59,8 @@ def api_getAllUsers():
 
 # route for user registration
 # without public key - tbd
-@app.route('/api/call/createuser')
-@app.route('/api/call/createUser')
+@app.route('/api/call/createuser', method="POST")
+@app.route('/api/call/createUser', method="POST")
 def api_insertUser():
     def insertUserToDB(id,username,location):
         cur.execute("INSERT INTO users (id,username,location) VALUES (?,?,?)", (id, username, location))
