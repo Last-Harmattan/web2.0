@@ -7,10 +7,10 @@
  * @member rows - rows containing the documents, or just the _id/_revs if you didn’t set include_docs to true.
  * (https://pouchdb.com/api.html#batch_fetch 05.07.2021 22:57)
  */
-export interface AllDocumentsInterface {
+export interface AllDocumentsInterface<T> {
   offset: number;
   total_rows: number;
-  rows: Row[];
+  rows: Row<T>[];
 }
 
 /**
@@ -23,9 +23,14 @@ export interface AllDocumentsInterface {
  * @member value
  * @member doc
  */
-export interface Row {
+export interface Row<T> {
   id: string;
   key: string;
   value: { rev: string };
-  doc?: any;
+  doc?: T | AllDocsError;
+}
+
+export interface AllDocsError {
+  error: string;
+  key: string;
 }

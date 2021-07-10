@@ -20,7 +20,7 @@ export interface CommentDB {
   _deleted?: boolean;
   type: string;
   postId: string;
-  author: string;
+  authorId: string;
   date: string;
   content: string;
   likes: number;

@@ -31,7 +31,7 @@ export function Feed() {
   const handlePostInputSubmit = () => {
     dispatch(
       addPost({
-        author: currentUser.userID,
+        authorId: currentUser._id,
         comments: [],
         content: newPostContent,
         date: new Date().toISOString(),
@@ -55,7 +55,7 @@ export function Feed() {
       {sortedPosts.map(p => (
         <Post
           key={p._id}
-          name={p.author}
+          name={p.authorId}
           time={p.date}
           content={p.content}
           likes={p.likes}

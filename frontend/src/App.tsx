@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { Banner } from './component/Banner';
+import { UserDbTestComponent } from './database/UserDbTestComponent';
 import { Feed } from './pages/Feed';
 import { Signup } from './pages/Signup';
 import { initFriends } from './state/friendsSlice';
@@ -28,6 +29,8 @@ export function App() {
     <div>
       <Router history={customHistory}>
         <Banner></Banner>
+
+        <UserDbTestComponent></UserDbTestComponent>
 
         <Switch>
           <Route path='/signup'>{isLoggedIn ? <Redirect to='/' /> : <Signup />}</Route>

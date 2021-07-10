@@ -6,8 +6,7 @@
  * @member lastOnline - Timestamp where the friend was last online
  */
 export interface Friend {
-  _id?: string; //id assigned in the db
-  userId: string; //id of the userItself
+  _id: string; //id assigned in the db and the userId itself (userIds are unique)
   userName: string;
   lastOnline: string;
 }

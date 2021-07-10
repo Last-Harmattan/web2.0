@@ -1,11 +1,12 @@
 import PouchDB from 'pouchdb-browser';
 import find from 'pouchdb-find';
-import { DbTypeMapper } from './DbTypeMapper';
+import { DbTypeMapper } from './Utils/DbTypeMapper';
 import { CommentDB } from './types/internal/CommentDb';
 import { DbEntryMethaData } from './types/internal/DbEntryMethaData';
 import { PostDB } from './types/internal/PostDB';
 import { Comment } from './types/public/Comment';
 import { Post } from './types/public/Post';
+import { FindResults } from './types/internal/FindResults';
 
 PouchDB.plugin(find);
 
@@ -35,15 +36,16 @@ export class CommentDBWrapper {
    * entires are in the same order the comments were in the post object.
    * Set these Ids in the post and comment objects that are originally passed to
    * the function on your side!
-   * Ids are required for editing and deletion of objects in the database.
    *
    * @param post - Post that shall be stored in the database.
+   * @param isPostOfDbOwner - Indicates if this is a Post from the User and not one of his friends
    * @returns {Promise<(DbEntryMethaData | PouchDB.Core.Error)[]>}
    */
   saveNewPost(post: Post): Promise<(DbEntryMethaData | PouchDB.Core.Error)[]> {
+    post.comments = [];
     const postDb: PostDB = {
       type: 'post',
-      author: post.author,
+      authorId: post.authorId,
       date: post.date,
       content: post.content,
       likes: post.likes,
@@ -57,7 +59,7 @@ export class CommentDBWrapper {
           type: 'comment',
           postId: metaData.id,
           date: comment.date,
-          author: comment.author,
+          authorId: comment.authorId,
           content: comment.content,
           likes: comment.likes,
           dislikes: comment.dislikes,
@@ -98,8 +100,8 @@ export class CommentDBWrapper {
   }
 
   updatePost(post: Post): Promise<DbEntryMethaData> {
-    return this.db.get(post._id!).then((postDb: PostDB) => {
-      postDb.author = post.author;
+    return this.db.get<PostDB>(post._id!).then((postDb: PostDB) => {
+      postDb.authorId = post.authorId;
       postDb.content = post.content;
       postDb.date = post.date;
       postDb.likes = post.likes;
@@ -109,22 +111,30 @@ export class CommentDBWrapper {
   }
 
   getPostById(id: string): Promise<Post> {
-    return this.db.get(id).then(post => {
+    return this.db.get<PostDB>(id).then(post => {
       return this.getCommentsToPost(id).then(comments => DbTypeMapper.mapPost(post, comments));
     });
   }
 
   getAllPosts(): Promise<Post[]> {
-    return this.db.find({ selector: { type: 'post' } }).then(result =>
+    return this.db.find({ selector: { type: 'post' } }).then(result => {
       // For each post (of type PostDB) load his comments (of type Comment[]).
       // When the inner promise to load the comments resolves, put them together into one Post
       // object.
-      Promise.all(
-        result.docs.map(post =>
-          this.getCommentsToPost(post._id).then(comments => DbTypeMapper.mapPost(post, comments))
+      return Promise.all(
+        (result.docs as PostDB[]).map((post: PostDB) =>
+          this.getCommentsToPost(post._id!).then(comments => DbTypeMapper.mapPost(post, comments))
         )
-      )
-    );
+      );
+    });
+  }
+
+  getPostsAfterTimeFromUser(iso8061DateString: string, authorId: string): Promise<Post[]> {
+    return this.db
+      .find({ selector: { type: 'post', authorId: authorId, date: { $gt: iso8061DateString } } })
+      .then((result: FindResults) => {
+        return DbTypeMapper.mapPosts(result.docs);
+      });
   }
 
   addCommentToPost(postId: string, comment: Comment): Promise<DbEntryMethaData> {
@@ -132,8 +142,8 @@ export class CommentDBWrapper {
     const newCommentDb: CommentDB = {
       postId: postId,
       type: 'comment',
-      author: comment.author,
-      date: 'date',
+      authorId: comment.authorId,
+      date: comment.date,
       content: comment.content,
       likes: comment.likes,
       dislikes: comment.dislikes,
@@ -152,8 +162,8 @@ export class CommentDBWrapper {
   }
 
   updateComment(comment: Comment): Promise<DbEntryMethaData> {
-    return this.db.get(comment._id!).then(commentDb => {
-      commentDb.author = comment.author;
+    return this.db.get<PostDB>(comment._id!).then(commentDb => {
+      commentDb.authorId = comment.authorId;
       commentDb.content = comment.content;
       commentDb.date = comment.date;
       commentDb.likes = comment.likes;
