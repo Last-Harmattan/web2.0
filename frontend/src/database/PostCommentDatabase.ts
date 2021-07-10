@@ -7,7 +7,6 @@ import { PostDB } from './types/internal/PostDB';
 import { Comment } from './types/public/Comment';
 import { Post } from './types/public/Post';
 import { FindResults } from './types/internal/FindResults';
-import { NewestPostInfo } from './types/internal/NewestPostInfo';
 
 PouchDB.plugin(find);
 
@@ -22,7 +21,7 @@ PouchDB.plugin(find);
  *
  **/
 export class CommentDBWrapper {
-  private db: PouchDB.Database<PostDB | CommentDB | NewestPostInfo>;
+  private db: PouchDB.Database<PostDB | CommentDB>;
 
   constructor() {
     this.db = new PouchDB('Web20DB');
