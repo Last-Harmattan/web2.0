@@ -30,7 +30,8 @@ def init():
         cur.execute("""
         CREATE TABLE IF NOT EXISTS friendReq (
         friendA VARCHAR(36),
-        friendB VARCHAR(36));""")
+        friendB VARCHAR(36),
+        accept BIT DEFAULT 0);""")
         con.commit()
 
     createDB()
@@ -117,30 +118,56 @@ def upLocation():
 @app.route('/api/call/getLocation', method="GET")
 @app.route('/api/call/getlocation', method="GET")
 def getLocation():
-    id = request.query['ID']
-    cur.execute("select location from users where id = ?", [id])
-    content=cur.fetchall()
+
     response.headers['Content-Type'] = 'application/json'
-    return(json.dumps(content))
+
+    def queryToJSON(query):
+        re = []
+        for e in query:
+            re.append({"LOCATION":e[0]})
+        return(json.dumps(re))
+
+    id = request.query['ID']
+    getfrom = request.query['GETFROM']
+    cur.execute("select accept from friendReq where friendA = ? and friendB = ?", [id, getfrom])
+    content=cur.fetchall()
+
+    if(content[0][0]):
+        cur.execute("select location from users where id = ?", [getfrom])
+        content=cur.fetchall()
+        return(json.dumps(content))
 
 @app.route('/api/call/friendreq', method="GET")
 @app.route('/api/call/friendReq', method="GET")
 def friendReq():
     friendA = request.query['FROM']
     friendB = request.query['TO']
-    cur.execute("INSERT INTO friendReq (friendA,friendb) VALUES (?,?)", (friendA, friendB))
+    cur.execute("INSERT INTO friendReq (friendA,friendb, accept) VALUES (?,?,0)", (friendA, friendB))
     con.commit()
 
 
 @app.route('/api/call/getfriendreq', method="GET")
 @app.route('/api/call/getFriendReq', method="GET")
 def getfriendReq():
+    def queryToJSON(query):
+        re = []
+        for e in query:
+            re.append({"FROM":e[0]})
+        return(json.dumps(re))
     id = request.query['ID']
-    cur.execute("select friendA from friendReq where friendB = ?", [id])
+    cur.execute("select friendA from friendReq where friendB = ? and accept = 0", [id])
     content=cur.fetchall()
     response.headers['Content-Type'] = 'application/json'
-    return(json.dumps(content))
+    return(queryToJSON(content))
 
+@app.route('/api/call/acceptFriend', method="GET")
+@app.route('/api/call/acceptfriend', method="GET")
+def acceptFriend():
+    id = request.query['ID']
+    friend = request.query['FRIEND']
+    cur.execute("update friendReq set accept = 1 where friendB = ? and friendA= ?", (id, friend))
+    cur.execute("INSERT INTO friendReq (friendA,friendb, accept) VALUES (?,?,1)", (id, friend))
+    con.commit()
 
 init()
 
