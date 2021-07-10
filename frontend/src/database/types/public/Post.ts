@@ -6,15 +6,15 @@ import { Comment } from './Comment';
  * @member author - Name of the author of these post
  * @member date - Date on that the post was written
  * @member content - Content of the post
- * @member likes - Number of likes of the post
- * @member dislikes - Number of dislikes of the post
+ * @member likes - number of likes of the post
+ * @member dislikes - number of dislikes of the post
  */
 export interface Post {
   _id?: string;
-  author: string;
+  authorId: string;
   date: string; //ISO-8601
   content: string;
-  likes: Number;
-  dislikes: Number;
+  likes: number;
+  dislikes: number;
   comments: Array<Comment>;
 }

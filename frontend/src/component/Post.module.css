@@ -8,5 +8,6 @@
 .Post {
   width: 100%;
   max-width: 1000px;
+  margin-top: 8px;
   float: right;
 }

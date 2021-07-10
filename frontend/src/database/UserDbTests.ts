@@ -131,3 +131,16 @@ export function deleteDatabaseTest() {
     }
   );
 }
+
+export function genericTest() {
+  const db = new UserDatabase();
+
+  db.getUsernamesToIds(['TestId', 'Mongo']).then(
+    function onSuccess(result) {
+      console.log(result);
+    },
+    function onFailure(error) {
+      console.log(error);
+    }
+  );
+}

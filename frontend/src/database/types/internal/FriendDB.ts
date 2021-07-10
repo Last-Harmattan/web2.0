@@ -8,10 +8,9 @@
  * @member lastOnline - Timestamp where the friend was last online
  */
 export interface FriendDB {
-  _id?: string;
+  _id: string;
   _rev?: string;
   type: string;
-  userId: string;
   userName: string;
   lastOnline: string;
 }
