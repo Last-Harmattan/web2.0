@@ -1,5 +1,7 @@
 import { DataConnection } from 'peerjs';
+import { Friend } from '../database/types/public/Friend';
 import { Post } from '../database/types/public/Post';
+import { UserDatabase } from '../database/UserDatabase';
 import { PeerJSService } from './PeerJSService';
 import { CommunicationType, PostCommunicationData } from './PostRequest';
 
@@ -7,9 +9,29 @@ let peerJSService: PeerJSService = new PeerJSService();
 var connection: DataConnection | null = null;
 var connectedToServer: boolean = false;
 var connectedtoforeignPeer: boolean = false;
+var userDB = new UserDatabase();
+var friendList: Friend[];
+var currentFetchingFriendPeerID: string | null = null;
 
 export function init() {
   peerJSService.openNewPeer(onPeerOpened, onPeerDisconnected, onConnected);
+}
+
+export function updatePosts() {
+  userDB.getAllFriends().then(onUpdateFriendList);
+}
+
+function onUpdateFriendList(friends: Friend[] | null) {
+  if (friends != null) {
+    friendList = friends;
+    updatePostsOfFriend(0);
+  }
+}
+
+function updatePostsOfFriend(pos: number) {
+  let friend = friendList[pos];
+  let friendPeerID = 'API call für die PeerID von friend.userName'; // TODO: API call
+  connectToPeer(friendPeerID);
 }
 
 export function connectToPeer(id: string) {
@@ -26,6 +48,7 @@ function onPeerOpened(id: string) {
 }
 
 function onPeerDisconnected() {
+  // TODO: Reconnect
   connectedToServer = false;
 }
 
@@ -35,6 +58,7 @@ function onConnected(newConnection?: DataConnection) {
     newConnection?.close();
     return;
   }
+
   connection = newConnection;
   console.log('connected to foreingn peer: ', connection.peer);
   connection.on('open', onReadyToSendData);
@@ -46,8 +70,11 @@ function onConnected(newConnection?: DataConnection) {
 function onReadyToSendData() {
   console.log('Ready to send Data!');
   connectedtoforeignPeer = true;
-  let msg = getCurrentPostTimestampRequestMessage();
-  connection?.send(msg);
+
+  if (currentFetchingFriendPeerID == connection?.peer) {
+    let msg = getCurrentPostTimestampRequestMessage();
+    connection?.send(msg);
+  }
 }
 
 function onMessageReceived(data: string) {
