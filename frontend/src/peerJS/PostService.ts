@@ -1,73 +1,57 @@
 import { Post } from '../database/types/public/Post';
-import { PeerJSService } from './PeerJSService';
 import { CommunicationType, PostCommunicationData } from './PostRequest';
 
 /**
- * Establishes the connection to another Peer
- * @param id - PeerJS-ID of another Peer
+ * creates request message for the latest post timestamp
  */
-export function connectToPeer(peerJSService: PeerJSService, id: string) {
-  peerJSService.connectToPeer(id);
+export function getCurrentPostTimestampRequestMessage(): string {
+  let sender: string = 'Hier steht die Sender ID'; // TODO: ID des Senders (eigene unique ID) aus Datenbank holen
+  let request = new PostCommunicationData(CommunicationType.GET_CURRENT_POST_TIME, sender);
+  return JSON.stringify(request);
 }
 
 /**
- * Requests most current Post timestamp from connected Peer
- */
-export function getLatestPostTimestamp(peerJSService: PeerJSService) {
-  if (peerJSService.isConnected()) {
-    let request = new PostCommunicationData(CommunicationType.GET_CURRENT_POST_TIME);
-    let jsonRequest = JSON.stringify(request);
-    peerJSService.sendMessage(jsonRequest);
-    console.log('sent message to Peer: ', jsonRequest);
-  }
-}
-
-/**
- * Requests all new Post after timestamp from connected Peer
+ * creates request message for posts after a given timestamp
  * @param time - timestamp of newest known Post
  */
-export function getPosts(peerJSService: PeerJSService, time: string) {
-  if (peerJSService.isConnected()) {
-    let request = new PostCommunicationData(CommunicationType.GET_POSTS_AFTER_TIME, time);
-    let jsonRequest = JSON.stringify(request);
-    peerJSService.sendMessage(jsonRequest);
-    console.log('sent message to Peer: ', jsonRequest);
-  }
+export function getPostsRequestMessage(time: string): string {
+  let request = new PostCommunicationData(CommunicationType.GET_POSTS_AFTER_TIME, time);
+  return JSON.stringify(request);
 }
 
 /**
- * Sends the current Timestamp to connected Peer
+ * Creates response message for timestamp
  */
-export function sendCurrentTimestamp(peerJSService: PeerJSService) {
-  if (peerJSService.isConnected()) {
-    let time: string = 'Timestamp from Database'; // TODO: Datenbankcall für Timestamp
-    let response = new PostCommunicationData(
-      CommunicationType.RESPONSE_CURRENT_POST_TIME,
-      time,
-      null
-    );
-    let jsonResponse = JSON.stringify(response);
-    peerJSService.sendMessage(jsonResponse);
-    console.log('sent message to Peer: ', jsonResponse);
-  }
+export function getCurrentTimestampResponseMessage(): string {
+  let time: string = 'Timestamp from Database'; // TODO: Datenbankcall für Timestamp
+  let response = new PostCommunicationData(
+    CommunicationType.RESPONSE_CURRENT_POST_TIME,
+    time,
+    null
+  );
+  return JSON.stringify(response);
 }
 
 /**
- * Sends new Posts to connected Peers
+ * Creates response message for posts
  * @param time - timestamp of newest know Post
  */
-export function sendPostsAfterTime(peerJSService: PeerJSService, time: string) {
-  if (peerJSService.isConnected()) {
-    let posts: Post[] = []; // TODO: Datenbankcall für die Posts muss hier hin
-    let response = new PostCommunicationData(
-      CommunicationType.RESPONSE_POSTS_AFTER_TIME,
-      null,
-      posts
-    );
-    let jsonResponse = JSON.stringify(response);
-    peerJSService.sendMessage(jsonResponse);
-    console.log('sent message to Peer: ', jsonResponse);
-  }
+export function getPostResponseMessage(time: string) {
+  let posts: Post[] = []; // TODO: Datenbankcall für die Posts muss hier hin
+  let sender: string = 'Hier steht die Sender ID'; // TODO: ID des Senders (eigene unique ID) aus Datenbank holen
+  let response = new PostCommunicationData(
+    CommunicationType.RESPONSE_POSTS_AFTER_TIME,
+    sender,
+    null,
+    posts
+  );
+  let jsonResponse = JSON.stringify(response);
+}
+
+export function mapJSONResponseToPostCommunicationData(json: string): PostCommunicationData {
+  let obj = JSON.parse(json);
+  let type: CommunicationType = CommunicationType[obj.type as keyof typeof CommunicationType];
+  return new PostCommunicationData(type, obj.time, obj.posts); // TODO: korrektes mapping auf posts
 }
 
 /**

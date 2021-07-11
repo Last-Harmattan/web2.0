@@ -1,8 +1,13 @@
+import { DataConnection } from 'peerjs';
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button } from '../component/Button';
 import { Post } from '../component/Post';
 import { PostInputField } from '../component/PostInputField';
+import { TextInput, TextInputType } from '../component/TextInput';
 import { PeerJSService } from '../peerJS/PeerJSService';
+import { PostCommunicationData } from '../peerJS/PostRequest';
+import * as PostService from '../peerJS/PostService';
 import { addPost } from '../state/postsSlice';
 import { RootState } from '../state/reducers';
 import { AppDispatch } from '../state/store';
@@ -44,6 +49,7 @@ export function Feed() {
 
   return (
     <div className={styles.Center}>
+      <Button label={'Refresh'} onClick={onRefreshClicked}></Button>
       <PostInputField
         placeholder='Was möchtest du sagen?'
         maxChars={200}
@@ -51,6 +57,12 @@ export function Feed() {
         onChangeValue={value => setNewPostContent(value)}
         onSubmit={handlePostInputSubmit}
       />
+
+      <TextInput
+        placeholder={'Foreign Peer ID'}
+        type={TextInputType.TEXT}
+        onChangeValue={onIDChanged}
+      ></TextInput>
 
       {sortedPosts.map(p => (
         <Post
@@ -67,27 +79,92 @@ export function Feed() {
   );
 }
 
-let peerJSService: PeerJSService = new PeerJSService(onConnected, onMessageReceived, onPeerOpened);
-let connected: boolean = false;
+let peerJSService: PeerJSService = new PeerJSService();
+var connection: DataConnection | null = null;
+var connectedToServer: boolean = false;
+var connectedtoforeignPeer: boolean = false;
+var foreignPeerID: string = '';
 
 initPeerJSService();
 
 function initPeerJSService() {
-  peerJSService.openPeer();
+  peerJSService.openNewPeer(onPeerOpened, onPeerDisconnected, onConnected);
 }
 
 function onPeerOpened(id: string) {
+  connectedToServer = true;
   console.log('Opened Peer with id: ', id);
 }
 
-function onConnected(isConnected: boolean) {
-  connected = isConnected;
-}
-
-function onMessageReceived(data: string) {
-  console.log('Received Message: ', data);
+function onPeerDisconnected() {
+  connectedToServer = false;
 }
 
 function onRefreshClicked() {
   console.log('Button Clicked');
+  onConnected(peerJSService.connectToForeignPeer(foreignPeerID));
+}
+
+function onConnected(newConnection?: DataConnection) {
+  if (newConnection == null || connectedtoforeignPeer) {
+    newConnection?.close();
+    return;
+  }
+  connection = newConnection;
+  console.log('connected to foreingn peer: ', connection.peer);
+  connection.on('open', onReadyToSendData);
+  connection.on('data', onMessageReceived);
+  connection.on('close', onConnectionClosed);
+  connection.on('error', onConnectionError);
+}
+
+function onReadyToSendData() {
+  console.log('Ready to send Data!');
+  connectedtoforeignPeer = true;
+  let msg = PostService.getCurrentPostTimestampRequestMessage();
+  connection?.send(msg);
+}
+
+function onMessageReceived(data: string) {
+  console.log('Received Message: ', data);
+  let responseData = PostService.mapJSONResponseToPostCommunicationData(data);
+  console.log(responseData);
+  PostService.handleResponseData(
+    responseData,
+    handleTimeResponse,
+    handlePostResponse,
+    handleTimeRequest,
+    handlePostRequest
+  );
+}
+
+function onConnectionClosed() {
+  connectedtoforeignPeer = false;
+  connection = null;
+}
+
+function onConnectionError(error: any) {
+  console.log(error);
+  connectedtoforeignPeer = false;
+  connection = null;
+}
+
+function onIDChanged(id: string) {
+  foreignPeerID = id;
+}
+
+function handleTimeResponse(response: PostCommunicationData) {
+  // TODO: check if Time is newer than last known one and request new Posts if so, else disconnect
+}
+
+function handlePostResponse(response: PostCommunicationData) {
+  // TODO: insert new Posts into database an update UI and disconnect
+}
+
+function handleTimeRequest() {
+  // TODO: send the most current Time to current connected Peer
+}
+
+function handlePostRequest(response: PostCommunicationData) {
+  // TODO: send new Posts after given Timestamp to connected Peer and disconnect
 }

@@ -9,13 +9,13 @@ import { Post } from '../database/types/public/Post';
  */
 export enum CommunicationType {
   /** Request for Timestamp of most current Post */
-  GET_CURRENT_POST_TIME,
+  GET_CURRENT_POST_TIME = 'GET_CURRENT_POST_TIME',
   /** Request for Posts after Timestamp */
-  GET_POSTS_AFTER_TIME,
+  GET_POSTS_AFTER_TIME = 'GET_POSTS_AFTER_TIME',
   /** Response of the most current Timestamp */
-  RESPONSE_CURRENT_POST_TIME,
+  RESPONSE_CURRENT_POST_TIME = 'RESPONSE_CURRENT_POST_TIME',
   /** Response of Posts after Timestamp */
-  RESPONSE_POSTS_AFTER_TIME,
+  RESPONSE_POSTS_AFTER_TIME = 'RESPONSE_POSTS_AFTER_TIME',
 }
 
 /**
@@ -26,11 +26,18 @@ export enum CommunicationType {
  */
 export class PostCommunicationData {
   type: CommunicationType;
+  sender: string;
   time: string | null;
   posts: Post[] | null;
 
-  constructor(type: CommunicationType, time: string | null = null, posts: Post[] | null = null) {
+  constructor(
+    type: CommunicationType,
+    sender: string,
+    time: string | null = null,
+    posts: Post[] | null = null
+  ) {
     this.type = type;
+    this.sender = sender;
     this.time = time;
     this.posts = posts;
   }
