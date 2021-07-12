@@ -1,173 +1,69 @@
 import { DataConnection } from 'peerjs';
-import { Friend } from '../database/types/public/Friend';
 import { Post } from '../database/types/public/Post';
-import { UserDatabase } from '../database/UserDatabase';
 import { PeerJSService } from './PeerJSService';
 import { CommunicationType, PostCommunicationData } from './PostRequest';
 
 let peerJSService: PeerJSService = new PeerJSService();
-var connection: DataConnection | null = null;
-var connectedToServer: boolean = false;
-var connectedtoforeignPeer: boolean = false;
-var userDB = new UserDatabase();
-var friendList: Friend[];
-var currentFetchingFriendPeerID: string | null = null;
+var eventHandler: (foreingPeerID: string, time: string) => Promise<Post[]>;
 
-export function init() {
-  peerJSService.openNewPeer(onPeerOpened, onPeerDisconnected, onConnected);
+export function openPeer(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    peerJSService.openNewPeer(
+      (id: string) => {
+        resolve(id);
+      },
+      () => {
+        reject();
+      },
+      onForeignConnection
+    );
+  });
 }
 
-export function updatePosts() {
-  userDB.getAllFriends().then(onUpdateFriendList);
+function onForeignConnection(connection: DataConnection) {
+  connection.on('data', (data: string) => {
+    onMessageReceived(connection, data);
+  });
 }
 
-function onUpdateFriendList(friends: Friend[] | null) {
-  if (friends != null) {
-    friendList = friends;
-    updatePostsOfFriend(0);
-  }
+export function addEventHandler(handler: (foreingPeerID: string, time: string) => Promise<Post[]>) {
+  eventHandler = handler;
 }
 
-function updatePostsOfFriend(pos: number) {
-  let friend = friendList[pos];
-  let friendPeerID = 'API call für die PeerID von friend.userName'; // TODO: API call
-  connectToPeer(friendPeerID);
+export function sendGetNewPostsRequest(
+  peerID: string,
+  time: string
+): Promise<{ connectionSuccess: boolean; time: string; posts: Post[] }> {
+  return new Promise((resolve, reject) => {
+    let connection = peerJSService.connectToForeignPeer(peerID);
+
+    connection?.on('open', () => {
+      connection?.send(getPostsRequestMessage(time));
+    });
+
+    connection?.on('error', error => {
+      reject(error);
+    });
+
+    connection?.on('close', () => {
+      reject('ConnectionClosed');
+    });
+
+    connection?.on('data', (data: string) => {
+      let messageData = onMessageReceived(connection!!, data);
+      resolve({ connectionSuccess: true, time: messageData.time, posts: messageData.posts });
+    });
+  });
 }
 
-export function connectToPeer(id: string) {
-  if (!connectedToServer) {
-    console.log('Not connected to a Server!');
-    return;
-  }
-  onConnected(peerJSService.connectToForeignPeer(id));
-}
-
-function onPeerOpened(id: string) {
-  connectedToServer = true;
-  console.log('Opened Peer with id: ', id);
-}
-
-function onPeerDisconnected() {
-  // TODO: Reconnect
-  connectedToServer = false;
-}
-
-function onConnected(newConnection?: DataConnection) {
-  if (newConnection == null || connectedtoforeignPeer) {
-    console.log('Connection refused');
-    newConnection?.close();
-    return;
-  }
-
-  connection = newConnection;
-  console.log('connected to foreingn peer: ', connection.peer);
-  connection.on('open', onReadyToSendData);
-  connection.on('data', onMessageReceived);
-  connection.on('close', onConnectionClosed);
-  connection.on('error', onConnectionError);
-}
-
-function onReadyToSendData() {
-  console.log('Ready to send Data!');
-  connectedtoforeignPeer = true;
-
-  if (currentFetchingFriendPeerID == connection?.peer) {
-    let msg = getCurrentPostTimestampRequestMessage();
-    connection?.send(msg);
-  }
-}
-
-function onMessageReceived(data: string) {
+function onMessageReceived(
+  connection: DataConnection,
+  data: string
+): { posts: Post[]; time: string } {
   console.log('Received Message: ', data);
   let responseData = mapJSONResponseToPostCommunicationData(data);
   console.log(responseData);
-  handleResponseData(
-    responseData,
-    handleTimeResponse,
-    handlePostResponse,
-    handleTimeRequest,
-    handlePostRequest
-  );
-}
-
-function onConnectionClosed() {
-  connectedtoforeignPeer = false;
-  connection = null;
-}
-
-function onConnectionError(error: any) {
-  console.log(error);
-  connectedtoforeignPeer = false;
-  connection = null;
-}
-
-function handleTimeResponse(response: PostCommunicationData) {
-  // TODO: check if Time is newer than last known one and request new Posts if so, else disconnect
-}
-
-function handlePostResponse(response: PostCommunicationData) {
-  // TODO: insert new Posts into database an update UI and disconnect
-}
-
-function handleTimeRequest() {
-  // TODO: send the most current Time to current connected Peer
-}
-
-function handlePostRequest(response: PostCommunicationData) {
-  // TODO: send new Posts after given Timestamp to connected Peer and disconnect
-}
-
-/**
- * creates request message for the latest post timestamp
- */
-function getCurrentPostTimestampRequestMessage(): string {
-  let sender: string = 'Hier steht die Sender ID'; // TODO: ID des Senders (eigene unique ID) aus Datenbank holen
-  let request = new PostCommunicationData(CommunicationType.GET_CURRENT_POST_TIME, sender);
-  return JSON.stringify(request);
-}
-
-/**
- * creates request message for posts after a given timestamp
- * @param time - timestamp of newest known Post
- */
-function getPostsRequestMessage(time: string): string {
-  let request = new PostCommunicationData(CommunicationType.GET_POSTS_AFTER_TIME, time);
-  return JSON.stringify(request);
-}
-
-/**
- * Creates response message for timestamp
- */
-function getCurrentTimestampResponseMessage(): string {
-  let time: string = 'Timestamp from Database'; // TODO: Datenbankcall für Timestamp
-  let response = new PostCommunicationData(
-    CommunicationType.RESPONSE_CURRENT_POST_TIME,
-    time,
-    null
-  );
-  return JSON.stringify(response);
-}
-
-/**
- * Creates response message for posts
- * @param time - timestamp of newest know Post
- */
-function getPostResponseMessage(time: string) {
-  let posts: Post[] = []; // TODO: Datenbankcall für die Posts muss hier hin
-  let sender: string = 'Hier steht die Sender ID'; // TODO: ID des Senders (eigene unique ID) aus Datenbank holen
-  let response = new PostCommunicationData(
-    CommunicationType.RESPONSE_POSTS_AFTER_TIME,
-    sender,
-    null,
-    posts
-  );
-  let jsonResponse = JSON.stringify(response);
-}
-
-function mapJSONResponseToPostCommunicationData(json: string): PostCommunicationData {
-  let obj = JSON.parse(json);
-  let type: CommunicationType = CommunicationType[obj.type as keyof typeof CommunicationType];
-  return new PostCommunicationData(type, obj.sender, obj.time, obj.posts); // TODO: korrektes mapping auf posts
+  return handleResponseData(responseData, connection);
 }
 
 /**
@@ -176,30 +72,77 @@ function mapJSONResponseToPostCommunicationData(json: string): PostCommunication
  */
 function handleResponseData(
   response: PostCommunicationData,
-  handleTimeResponse: (response: PostCommunicationData) => void,
-  handlePostResponse: (response: PostCommunicationData) => void,
-  handleTimeRequest: () => void,
-  handlePostRequest: (response: PostCommunicationData) => void
-) {
+  connection: DataConnection
+): { posts: Post[]; time: string } {
   switch (response.type) {
-    case CommunicationType.RESPONSE_CURRENT_POST_TIME: {
-      handleTimeResponse(response);
-      break;
-    }
     case CommunicationType.RESPONSE_POSTS_AFTER_TIME: {
-      handlePostResponse(response);
-      break;
+      return handlePostResponse(response);
     }
-    case CommunicationType.GET_CURRENT_POST_TIME: {
-      handleTimeRequest();
-      break;
-    }
-    case CommunicationType.GET_POSTS_AFTER_TIME: {
-      handlePostRequest(response);
-      break;
+    case CommunicationType.REQUEST_POSTS_AFTER_TIME: {
+      handlePostRequest(response, connection);
+      return { posts: new Array<Post>(), time: response.time };
     }
     default: {
       console.log('Invalid Communication Type!');
+      return { posts: new Array<Post>(), time: response.time };
     }
   }
+}
+
+function handlePostRequest(request: PostCommunicationData, connection: DataConnection) {
+  eventHandler(connection.peer, request.time).then(posts => {
+    let message = getPostResponseMessage(request.time, posts); // TODO: Soll hier die neusete oder die Zeit rein, nach der die Posts gesendet wurden?
+    connection.send(message);
+  });
+}
+
+function handlePostResponse(response: PostCommunicationData): { posts: Post[]; time: string } {
+  return { posts: response.posts, time: response.time };
+}
+
+/**
+ * creates request message for posts after a given timestamp
+ * @param time - timestamp of newest known Post
+ */
+function getPostsRequestMessage(time: string): string {
+  let request = new PostCommunicationData(
+    CommunicationType.REQUEST_POSTS_AFTER_TIME,
+    time,
+    new Array<Post>()
+  );
+  return JSON.stringify(request);
+}
+
+/**
+ * Creates response message for posts
+ * @param time - timestamp of newest know Post
+ */
+function getPostResponseMessage(time: string, posts: Post[]): string {
+  let response = new PostCommunicationData(
+    CommunicationType.RESPONSE_POSTS_AFTER_TIME,
+    time,
+    posts
+  );
+  return JSON.stringify(response);
+}
+
+function mapJSONResponseToPostCommunicationData(json: string): PostCommunicationData {
+  let obj = JSON.parse(json);
+  let type: CommunicationType = CommunicationType[obj.type as keyof typeof CommunicationType];
+  let posts = new Array<Post>();
+
+  obj.posts.forEach((element: any) => {
+    let post: Post = {
+      _id: element._id,
+      authorId: element.authorID,
+      date: element.date,
+      content: element.content,
+      likes: element.likes,
+      dislikes: element.dislikes,
+      comments: element.comments, // TODO comments korrekt mappen wenn diese verwendet werden.
+    };
+    posts.push(post);
+  });
+
+  return new PostCommunicationData(type, obj.time, posts);
 }

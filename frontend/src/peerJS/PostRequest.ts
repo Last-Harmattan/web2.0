@@ -7,13 +7,9 @@ import { Post } from '../database/types/public/Post';
  * {@link #RESPONSE_CURRENT_POST_TIME}
  * {@link #RESPONSE_POSTS_AFTER_TIME}
  */
-export enum CommunicationType {
-  /** Request for Timestamp of most current Post */
-  GET_CURRENT_POST_TIME = 'GET_CURRENT_POST_TIME',
+export enum CommunicationType { // Attention: Value hast to be the same as the key for the mapper to work
   /** Request for Posts after Timestamp */
-  GET_POSTS_AFTER_TIME = 'GET_POSTS_AFTER_TIME',
-  /** Response of the most current Timestamp */
-  RESPONSE_CURRENT_POST_TIME = 'RESPONSE_CURRENT_POST_TIME',
+  REQUEST_POSTS_AFTER_TIME = 'REQUEST_POSTS_AFTER_TIME',
   /** Response of Posts after Timestamp */
   RESPONSE_POSTS_AFTER_TIME = 'RESPONSE_POSTS_AFTER_TIME',
 }
@@ -26,18 +22,11 @@ export enum CommunicationType {
  */
 export class PostCommunicationData {
   type: CommunicationType;
-  sender: string;
-  time: string | null;
-  posts: Post[] | null;
+  time: string;
+  posts: Post[];
 
-  constructor(
-    type: CommunicationType,
-    sender: string,
-    time: string | null = null,
-    posts: Post[] | null = null
-  ) {
+  constructor(type: CommunicationType, time: string, posts: Post[]) {
     this.type = type;
-    this.sender = sender;
     this.time = time;
     this.posts = posts;
   }

@@ -76,15 +76,24 @@ export function Feed() {
   );
 }
 
-var foreignPeerID: string = '';
+var mforeignPeerID: string = '';
 
-PostService.init();
+PostService.addEventHandler((foreingPeerID: string, time: string) => {
+  console.log('Event handler: ', foreingPeerID, ', ', time);
+  return new Promise((resolve, reject) => {
+    resolve([]);
+  });
+});
+
+PostService.openPeer().then((id: string) => {
+  console.log('Opened peer with id: ', id);
+});
 
 function onRefreshClicked() {
   console.log('Button Clicked');
-  PostService.connectToPeer(foreignPeerID);
+  PostService.sendGetNewPostsRequest(mforeignPeerID, '12:34');
 }
 
 function onIDChanged(id: string) {
-  foreignPeerID = id;
+  mforeignPeerID = id;
 }

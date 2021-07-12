@@ -23,23 +23,21 @@ export class PeerJSService {
     this.peer = new Peer(undefined, { debug: 2 });
     this.peer.on('open', onPeerOpened);
     this.peer.on('disconnected', onDisconnected);
-    this.peer?.on('connection', onConnected);
+    this.peer.on('close', onDisconnected);
+    this.peer.on('connection', onConnected);
   }
 
   /**
    * establishes connection to another Peer
    * @param id - PeerJS-ID of another Peer
    */
-  public connectToForeignPeer(id: string): DataConnection | undefined {
+  public connectToForeignPeer(id: string): DataConnection | null {
     if (this.peer == null) {
       console.log('You have to open a Peer first!');
+      return null;
     }
 
-    return this.peer?.connect(id);
-  }
-
-  public isConnected(): boolean {
-    return this.peer?.disconnected && this.peer.connections;
+    return this.peer.connect(id);
   }
 
   /**
