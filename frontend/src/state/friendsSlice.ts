@@ -62,6 +62,17 @@ export const acceptFriendRequest = createAsyncThunk(
   }
 );
 
+/**
+ * Updates the timestamp a friend was last seen.
+ */
+export const updateLastSeen = createAsyncThunk(
+  'friends/updateLastSeen',
+  async (args: { id: UserId; lastSeen: string }) => {
+    await db.updateTimeStampFriendWasLastOnline(args.id, args.lastSeen);
+    return args;
+  }
+);
+
 const initialState: State = {
   initialized: false,
   friends: [],
@@ -112,6 +123,15 @@ const friendsSlice = createSlice({
 
     builder.addCase(acceptFriendRequest.rejected, (state, { error }) => {
       toast.error('Failed to accept friend request: ' + JSON.stringify(error));
+    });
+
+    builder.addCase(updateLastSeen.fulfilled, (state, { payload }) => {
+      const friend = state.friends.find(f => f._id === payload.id);
+      friend!.lastOnline = payload.lastSeen;
+    });
+
+    builder.addCase(updateLastSeen.rejected, (state, { error }) => {
+      toast.error('Failed to update last seen: ' + JSON.stringify(error));
     });
   },
 });
