@@ -4,7 +4,7 @@ import { PostContent } from './PostContent';
 import { PostFooter } from './PostFooter';
 import { PostHeader } from './PostHeader';
 
-export interface PostProps {
+interface PostProps {
   name: string;
   time: string;
   content: string;
