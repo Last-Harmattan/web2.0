@@ -5,9 +5,12 @@ import { Post } from '../component/Post';
 import { PostInputField } from '../component/PostInputField';
 import { TextInput, TextInputType } from '../component/TextInput';
 import * as PostService from '../peerJS/PostService';
+import { Sidebar } from '../component/Sidebar';
+import { TestSidePostCommentDB } from '../database/TestSidePostCommentDB';
 import { addPost } from '../state/postsSlice';
 import { RootState } from '../state/reducers';
 import { AppDispatch } from '../state/store';
+import { searchUser } from '../api/backend';
 import styles from './Feed.module.css';
 
 export function Feed() {
@@ -15,6 +18,7 @@ export function Feed() {
   const posts = useSelector((state: RootState) => state.posts.posts);
   const currentUser = useSelector((state: RootState) => state.user.currentUser!);
   const [newPostContent, setNewPostContent] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   // Sort by newest post first, memoize the sorted array to avoid sorting on every render.
   const sortedPosts = useMemo(() => {
     return [...posts].sort((a, b) => {
@@ -44,9 +48,19 @@ export function Feed() {
     setNewPostContent('');
   };
 
+  const handleSearchQuery = () => {
+    setSearchQuery('');
+    return searchUser(searchQuery);
+  };
+
   return (
     <div className={styles.Center}>
       <Button label={'Refresh'} onClick={onRefreshClicked}></Button>
+      <Sidebar
+        value={searchQuery}
+        onChangeValue={value => setSearchQuery(value)}
+        onSubmit={handleSearchQuery}
+      />
       <PostInputField
         placeholder='Was möchtest du sagen?'
         maxChars={200}
