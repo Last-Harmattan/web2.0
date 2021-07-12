@@ -51,7 +51,7 @@ def init():
         cur.execute("""
         CREATE TABLE IF NOT EXISTS users (
         id VARCHAR(36),
-        username VARCHAR(30),
+        username VARCHAR(30) unique,
         location VARCHAR(30),
         PRIMARY KEY (id));""")
         con.commit()
@@ -63,8 +63,6 @@ def init():
         con.commit()
 
     createDB()
-
-
 
 # route for debugging
 # get information about all users
