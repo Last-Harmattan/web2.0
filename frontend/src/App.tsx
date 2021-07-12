@@ -16,6 +16,7 @@ export function App() {
   const dispatch: AppDispatch = useDispatch();
 
   const isLoggedIn = useSelector((state: RootState) => !!state.user.currentUser);
+  const currentUserName = useSelector((state: RootState) => state.user.currentUser?.userName);
 
   useEffect(() => {
     // Initialize all stores.
@@ -27,7 +28,7 @@ export function App() {
   return (
     <div>
       <Router history={customHistory}>
-        <Banner></Banner>
+        <Banner userName={currentUserName} />
 
         <Switch>
           <Route path='/signup'>{isLoggedIn ? <Redirect to='/' /> : <Signup />}</Route>
