@@ -1,3 +1,4 @@
+import { UserId } from '../api/backend';
 import { Post } from '../database/types/public/Post';
 
 /**
@@ -22,11 +23,13 @@ export enum CommunicationType { // Attention: Value hast to be the same as the k
  */
 export class PostCommunicationData {
   type: CommunicationType;
+  requesterUserId: UserId;
   time: string;
   posts: Post[];
 
-  constructor(type: CommunicationType, time: string, posts: Post[]) {
+  constructor(type: CommunicationType, requesterUserId: UserId, time: string, posts: Post[]) {
     this.type = type;
+    this.requesterUserId = requesterUserId;
     this.time = time;
     this.posts = posts;
   }
