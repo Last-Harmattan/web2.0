@@ -5,12 +5,13 @@ import { PostFooter } from './PostFooter';
 import { PostHeader } from './PostHeader';
 
 interface PostProps {
-  name: string;
+  authorId: string;
   time: string;
   content: string;
   likes: number;
   dislikes: number;
   isComment: boolean;
+  userNameMap: { [userId: string]: string };
 }
 
 export function Post(props: PostProps) {
@@ -19,7 +20,11 @@ export function Post(props: PostProps) {
 
   return (
     <div className={className}>
-      <PostHeader name={props.name} time={dateTime} isComment={props.isComment} />
+      <PostHeader
+        name={props.userNameMap[props.authorId]}
+        time={dateTime}
+        isComment={props.isComment}
+      />
       <PostContent content={props.content} />
       <PostFooter likes={props.likes} dislikes={props.dislikes} isComment={props.isComment} />
     </div>
