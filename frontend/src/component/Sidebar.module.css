@@ -8,6 +8,7 @@
   background-color: #204e4a;
   overflow-x: hidden;
   padding-top: 20px;
+  padding: 10px;
 }
 
 .Searchbar {
@@ -15,7 +16,6 @@
   display: block;
   box-sizing: border-box;
   padding: 10px;
-  width: 95%;
   margin: 0 auto;
   margin-bottom: 5px;
   border-radius: 10px;
@@ -24,6 +24,7 @@
   font-family: inherit;
   font-size: inherit;
   outline: none;
+  width: 100%;
 }
 
 .Button {
@@ -38,7 +39,7 @@
   color: #fff;
   font-weight: 600;
   border-radius: 10px;
-  width: 95%;
+  width: 100%;
 }
 
 .AcceptButton {
@@ -49,7 +50,7 @@
   border: 2px solid #204e4a;
   border-radius: 10px;
   font-weight: 600;
-  width: 95%;
+  width: 100%;
   margin: 0 auto;
   padding: 5px;
 }
@@ -59,8 +60,7 @@
   display: block;
   color: #fff;
   word-wrap: break-word;
-  padding-left: 5px;
-  padding-right: 5px;
+  margin-bottom: 0;
 }
 
 .Button:hover {
@@ -79,4 +79,9 @@
 
 .FriendField {
   padding-left: 7px;
+  margin-bottom: 0;
+}
+
+.Subheading {
+  color: #fff;
 }

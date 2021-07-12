@@ -15,7 +15,6 @@ export function Feed() {
   const friends = useSelector((state: RootState) => state.friends.friends);
 
   const [newPostContent, setNewPostContent] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
   // Sort by newest post first, memoize the sorted array to avoid sorting on every render.
   const sortedPosts = useMemo(() => {
     return [...posts].sort((a, b) => {
@@ -58,7 +57,7 @@ export function Feed() {
 
   return (
     <div className={styles.Center}>
-      <Sidebar />
+      <Sidebar userNameMap={userNameMap} />
       <PostInputField
         placeholder='Was möchtest du sagen?'
         maxChars={200}
