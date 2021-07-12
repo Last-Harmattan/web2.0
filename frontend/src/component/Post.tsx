@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './Post.module.css';
 import { PostContent } from './PostContent';
 import { PostFooter } from './PostFooter';
@@ -15,10 +15,11 @@ interface PostProps {
 
 export function Post(props: PostProps) {
   const className = props.isComment ? styles.Comment : styles.Post;
+  const dateTime = useMemo(() => new Date(props.time).toLocaleString(), [props.time]);
 
   return (
     <div className={className}>
-      <PostHeader name={props.name} time={props.time} isComment={props.isComment} />
+      <PostHeader name={props.name} time={dateTime} isComment={props.isComment} />
       <PostContent content={props.content} />
       <PostFooter likes={props.likes} dislikes={props.dislikes} isComment={props.isComment} />
     </div>
