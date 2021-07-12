@@ -7,13 +7,14 @@ import { TestSidePostCommentDB } from '../database/TestSidePostCommentDB';
 import { addPost } from '../state/postsSlice';
 import { RootState } from '../state/reducers';
 import { AppDispatch } from '../state/store';
-import { searchUser } from '../api/backend';
+import { searchUser, sendFriendRequest, getFriendRequest } from '../api/backend';
 import styles from './Feed.module.css';
 
 export function Feed() {
   const dispatch = useDispatch<AppDispatch>();
   const posts = useSelector((state: RootState) => state.posts.posts);
   const currentUser = useSelector((state: RootState) => state.user.currentUser!);
+  const requests = [{ from: 'bla' }];
   const [newPostContent, setNewPostContent] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   // Sort by newest post first, memoize the sorted array to avoid sorting on every render.
@@ -46,9 +47,17 @@ export function Feed() {
   };
 
   const handleSearchQuery = () => {
-    setSearchQuery('');
-    return searchUser(searchQuery);
+    searchUser(searchQuery)
+      .then(result => {
+        if (result) {
+          setSearchQuery('');
+          sendFriendRequest(currentUser._id, result.userId);
+        }
+      })
+      .catch(() => setSearchQuery('Existiert nicht!'));
   };
+
+  const acceptRequest = () => console.log('Hui');
 
   return (
     <div className={styles.Center}>
@@ -56,6 +65,8 @@ export function Feed() {
         value={searchQuery}
         onChangeValue={value => setSearchQuery(value)}
         onSubmit={handleSearchQuery}
+        requests={requests}
+        acceptRequest={acceptRequest}
       />
       <PostInputField
         placeholder='Was möchtest du sagen?'

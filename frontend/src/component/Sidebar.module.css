@@ -41,7 +41,33 @@
   width: 95%;
 }
 
+.AcceptButton {
+  position: relative;
+  display: block;
+  background-color: #6eeb83;
+  color: #fff;
+  border: 2px solid #204e4a;
+  border-radius: 10px;
+  font-weight: 600;
+  width: 95%;
+  margin: 0 auto;
+  padding: 5px;
+}
+
+.User {
+  position: relative;
+  display: block;
+  color: #fff;
+  word-wrap: break-word;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
 .Button:hover {
+  cursor: pointer;
+}
+
+.AcceptButton:hover {
   cursor: pointer;
 }
 
