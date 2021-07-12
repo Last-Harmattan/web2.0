@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchUser } from '../api/backend';
 import { Post } from '../component/Post';
 import { PostInputField } from '../component/PostInputField';
 import { Sidebar } from '../component/Sidebar';
@@ -57,28 +56,9 @@ export function Feed() {
     setNewPostContent('');
   };
 
-  const handleSearchQuery = () => {
-    searchUser(searchQuery)
-      .then(result => {
-        if (result) {
-          setSearchQuery('');
-          sendFriendRequest(currentUser._id, result.userId);
-        }
-      })
-      .catch(() => setSearchQuery('Existiert nicht!'));
-  };
-
-  const acceptRequest = () => console.log('Hui');
-
   return (
     <div className={styles.Center}>
-      <Sidebar
-        value={searchQuery}
-        onChangeValue={value => setSearchQuery(value)}
-        onSubmit={handleSearchQuery}
-        requests={requests}
-        acceptRequest={acceptRequest}
-      />
+      <Sidebar />
       <PostInputField
         placeholder='Was möchtest du sagen?'
         maxChars={200}
