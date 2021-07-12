@@ -14,7 +14,7 @@ export function Feed() {
   const dispatch = useDispatch<AppDispatch>();
   const posts = useSelector((state: RootState) => state.posts.posts);
   const currentUser = useSelector((state: RootState) => state.user.currentUser!);
-  const requests = [{ from: 'bla' }];
+  const friends = useSelector((state: RootState) => state.friends.friends);
   const [newPostContent, setNewPostContent] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   // Sort by newest post first, memoize the sorted array to avoid sorting on every render.
@@ -31,6 +31,17 @@ export function Feed() {
       return 0;
     });
   }, [posts]);
+
+  // Map user ids to user names so post can render authors properly.
+  const userNameMap = useMemo(() => {
+    const map: { [userId: string]: string } = {};
+    map[currentUser._id] = currentUser.userName;
+    for (const friend of friends) {
+      map[friend._id] = friend.userName;
+    }
+
+    return map;
+  }, [currentUser, friends]);
 
   const handlePostInputSubmit = () => {
     dispatch(
@@ -78,12 +89,13 @@ export function Feed() {
       {sortedPosts.map(p => (
         <Post
           key={p._id}
-          name={p.authorId}
+          authorId={p.authorId}
           time={p.date}
           content={p.content}
           likes={p.likes}
           dislikes={p.dislikes}
           isComment={false}
+          userNameMap={userNameMap}
         />
       ))}
     </div>
