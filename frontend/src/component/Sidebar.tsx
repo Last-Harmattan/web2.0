@@ -1,29 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from './Button';
 import { RootState } from '../state/reducers';
 import styles from './Sidebar.module.css';
 import { useSelector } from 'react-redux';
+import { searchUser, sendFriendRequest } from '../api/backend';
+import { toast } from 'react-toastify';
 
-interface SidebarProps {
-  value: string;
-  onSubmit: () => void;
-  onChangeValue: (newValue: string) => void;
-  requests: Array<{ from: string }>;
-  acceptRequest: () => void;
-}
+interface SidebarProps {}
 
 export function Sidebar(props: SidebarProps) {
   const friends = useSelector((state: RootState) => state.friends.friends);
+  const currentUser = useSelector((state: RootState) => state.user.currentUser!);
+
+  const [newFriendName, setNewFriendName] = useState('');
+
+  const handleSubmit = async () => {
+    try {
+      const user = await searchUser(newFriendName.trim());
+      if (!user) {
+        toast.error('User not found');
+        return;
+      }
+
+      await sendFriendRequest(currentUser._id, user.userId);
+      setNewFriendName('');
+      toast.info('Freundschaftsanfrage gesendet!');
+    } catch (err) {
+      toast.error('Sending friend request failed: ' + JSON.stringify(err));
+    }
+  };
 
   return (
     <div className={styles.Sidebar}>
       <input
         type='text'
         className={styles.Searchbar}
-        value={props.value}
-        onChange={ev => props.onChangeValue(ev.target.value)}
+        value={newFriendName}
+        onChange={ev => setNewFriendName(ev.target.value)}
       />
-      <Button label='Freund Hinzufügen' onClick={props.onSubmit} className={styles.Button} />
+      <Button label='Freund Hinzufügen' onClick={handleSubmit} className={styles.Button} />
       <hr />
       {friends.map(friend => (
         <div className={styles.Friend} key={friend._id}>
