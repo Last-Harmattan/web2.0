@@ -1,10 +1,11 @@
 import { DataConnection } from 'peerjs';
+import { UserId } from '../api/backend';
 import { Post } from '../database/types/public/Post';
 import { PeerJSService } from './PeerJSService';
 import { CommunicationType, PostCommunicationData } from './PostRequest';
 
 let peerJSService: PeerJSService = new PeerJSService();
-var eventHandler: (foreingPeerID: string, time: string) => Promise<Post[]>;
+var eventHandler: (requesterUserId: UserId, foreingPeerID: string, time: string) => Promise<Post[]>;
 
 export function openPeer(): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -26,11 +27,21 @@ function onForeignConnection(connection: DataConnection) {
   });
 }
 
-export function addEventHandler(handler: (foreingPeerID: string, time: string) => Promise<Post[]>) {
+export function addEventHandler(
+  handler: (requesterUserId: UserId, foreingPeerID: string, time: string) => Promise<Post[]>
+) {
   eventHandler = handler;
 }
 
+/**
+ *
+ * @param userId User ID of the sender (aka me)
+ * @param peerID
+ * @param time
+ * @returns
+ */
 export function sendGetNewPostsRequest(
+  userId: string,
   peerID: string,
   time: string
 ): Promise<{ connectionSuccess: boolean; time: string; posts: Post[] }> {
@@ -38,10 +49,11 @@ export function sendGetNewPostsRequest(
     let connection = peerJSService.connectToForeignPeer(peerID);
 
     connection?.on('open', () => {
-      connection?.send(getPostsRequestMessage(time));
+      connection?.send(getPostsRequestMessage(userId, time));
     });
 
     connection?.on('error', error => {
+      console.log('connectToForeignPeer error', error);
       reject(error);
     });
 
@@ -90,23 +102,28 @@ function handleResponseData(
 }
 
 function handlePostRequest(request: PostCommunicationData, connection: DataConnection) {
-  eventHandler(connection.peer, request.time).then(posts => {
-    let message = getPostResponseMessage(request.time, posts); // TODO: Soll hier die neusete oder die Zeit rein, nach der die Posts gesendet wurden?
+  eventHandler(request.requesterUserId, connection.peer, request.time).then(posts => {
+    let message = getPostResponseMessage(request.requesterUserId, new Date().toISOString(), posts);
     connection.send(message);
   });
 }
 
-function handlePostResponse(response: PostCommunicationData): { posts: Post[]; time: string } {
-  return { posts: response.posts, time: response.time };
+function handlePostResponse(response: PostCommunicationData): {
+  requesterUserId: UserId;
+  posts: Post[];
+  time: string;
+} {
+  return { requesterUserId: response.requesterUserId, posts: response.posts, time: response.time };
 }
 
 /**
  * creates request message for posts after a given timestamp
  * @param time - timestamp of newest known Post
  */
-function getPostsRequestMessage(time: string): string {
+function getPostsRequestMessage(requesterUserId: string, time: string): string {
   let request = new PostCommunicationData(
     CommunicationType.REQUEST_POSTS_AFTER_TIME,
+    requesterUserId,
     time,
     new Array<Post>()
   );
@@ -117,9 +134,10 @@ function getPostsRequestMessage(time: string): string {
  * Creates response message for posts
  * @param time - timestamp of newest know Post
  */
-function getPostResponseMessage(time: string, posts: Post[]): string {
+function getPostResponseMessage(requesterUserId: UserId, time: string, posts: Post[]): string {
   let response = new PostCommunicationData(
     CommunicationType.RESPONSE_POSTS_AFTER_TIME,
+    requesterUserId,
     time,
     posts
   );
@@ -134,7 +152,7 @@ function mapJSONResponseToPostCommunicationData(json: string): PostCommunication
   obj.posts.forEach((element: any) => {
     let post: Post = {
       _id: element._id,
-      authorId: element.authorID,
+      authorId: element.authorId,
       date: element.date,
       content: element.content,
       likes: element.likes,
@@ -144,5 +162,5 @@ function mapJSONResponseToPostCommunicationData(json: string): PostCommunication
     posts.push(post);
   });
 
-  return new PostCommunicationData(type, obj.time, posts);
+  return new PostCommunicationData(type, obj.requesterUserId, obj.time, posts);
 }
