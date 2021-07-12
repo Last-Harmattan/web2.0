@@ -101,6 +101,7 @@ export async function sendFriendRequest(sender: UserId, receiver: UserId): Promi
 
 export interface GetFriendRequestResult {
   from: UserId;
+  userName: string;
 }
 
 /**
@@ -110,8 +111,8 @@ export interface GetFriendRequestResult {
 export async function getFriendRequest(userId: UserId): Promise<GetFriendRequestResult[]> {
   const url = `${baseUrl}/getFriendReq?ID=${decodeURIComponent(userId)}`;
   const response = await fetch(url);
-  const result = (await response.json()) as { FROM: UserId }[];
-  return result.map(el => ({ from: el.FROM }));
+  const result = (await response.json()) as { from: UserId; username: string }[];
+  return result.map(el => ({ from: el.from, userName: el.username }));
 }
 
 /**
