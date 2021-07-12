@@ -21,7 +21,7 @@ interface PostInputFieldProps {
 
 export function PostInputField(props: PostInputFieldProps) {
   return (
-    <div>
+    <div className={styles.PostInputContainer}>
       <textarea
         className={styles.PostInputField}
         placeholder={props.placeholder}
