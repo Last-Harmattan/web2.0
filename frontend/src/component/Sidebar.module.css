@@ -1,0 +1,46 @@
+.Sidebar {
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 50px;
+  left: 0;
+  background-color: #204e4a;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.Searchbar {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  padding: 10px;
+  width: 95%;
+  margin: 0 auto;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  border: 2px solid #204e4a;
+  box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+.Button {
+  position: relative;
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0 auto;
+  padding: 10px;
+  border: 2px solid #204e4a;
+  background-color: #f6ae2d;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  width: 95%;
+}
+
+.Button:hover {
+  cursor: pointer;
+}
