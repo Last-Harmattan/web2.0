@@ -44,3 +44,13 @@
 .Button:hover {
   cursor: pointer;
 }
+
+.Friend {
+  color: #fff;
+  font-size: medium;
+  position: relative;
+}
+
+.FriendField {
+  padding-left: 7px;
+}
