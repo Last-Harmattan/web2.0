@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button } from './Button';
 import { RootState } from '../state/reducers';
 import styles from './Sidebar.module.css';
@@ -7,9 +7,31 @@ import { GetFriendRequestResult, searchUser, sendFriendRequest } from '../api/ba
 import { toast } from 'react-toastify';
 import { AppDispatch } from '../state/store';
 import { acceptFriendRequest } from '../state/friendsSlice';
+import { Friend } from '../database/types/public/Friend';
 
 interface SidebarProps {
   userNameMap: { [userId: string]: string };
+}
+
+function FriendEntry(props: { friend: Friend }) {
+  const { friend } = props;
+
+  const lastOnline = useMemo(() => {
+    if (!friend.lastOnline) {
+      return 'noch nie';
+    }
+
+    return new Date(friend.lastOnline).toLocaleString();
+  }, [friend]);
+
+  return (
+    <div className={styles.Friend} key={friend._id}>
+      <p className={styles.FriendField}>
+        <b>{friend.userName}</b>
+      </p>
+      <small className={styles.FriendField}>Zuletzt online: {lastOnline}</small>
+    </div>
+  );
 }
 
 export function Sidebar(props: SidebarProps) {
@@ -80,14 +102,7 @@ export function Sidebar(props: SidebarProps) {
             <strong className={styles.Subheading}>Freunde</strong>
           </small>
           {friends.map(friend => (
-            <div className={styles.Friend} key={friend._id}>
-              <p className={styles.FriendField}>
-                <b>{friend.userName}</b>
-              </p>
-              <small className={styles.FriendField}>
-                Last Online: {friend.lastOnline || 'noch nie'}
-              </small>
-            </div>
+            <FriendEntry key={friend._id} friend={friend} />
           ))}
         </>
       )}
