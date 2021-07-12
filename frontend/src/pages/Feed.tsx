@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchUser } from '../api/backend';
 import { Post } from '../component/Post';
 import { PostInputField } from '../component/PostInputField';
 import { Sidebar } from '../component/Sidebar';
