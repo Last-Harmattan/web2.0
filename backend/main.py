@@ -172,10 +172,10 @@ def getfriendReq():
     def queryToJSON(query):
         re = []
         for e in query:
-            re.append({"FROM":e[0]})
+            re.append({"from":e[0], "username":e[1]})
         return(json.dumps(re))
     id = request.query['ID']
-    cur.execute("select friendA from friendReq where friendB = ? and accept = 0", [id])
+    cur.execute("select friendA, users.username from friendReq inner join users on users.id = friendA where friendB = ? and accept = 0", [id])
     content=cur.fetchall()
     response.headers['Content-Type'] = 'application/json'
     return(queryToJSON(content))
