@@ -10,6 +10,7 @@ interface SidebarProps {}
 
 export function Sidebar(props: SidebarProps) {
   const friends = useSelector((state: RootState) => state.friends.friends);
+  const friendRequests = useSelector((state: RootState) => state.friends.friendRequests);
   const currentUser = useSelector((state: RootState) => state.user.currentUser!);
 
   const [newFriendName, setNewFriendName] = useState('');
