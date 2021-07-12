@@ -1,7 +1,9 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { UserData } from '../database/types/public/UserData';
 import { UserDatabase } from '../database/UserDatabase';
+import * as backendApi from '../api/backend';
+import { RootState } from './reducers';
 
 export interface State {
   /**
@@ -13,6 +15,11 @@ export interface State {
    * The data of the current user.
    */
   currentUser?: UserData;
+
+  /**
+   * The users current peer id.
+   */
+  currentPeerId?: string;
 }
 
 const db = new UserDatabase();
@@ -20,6 +27,24 @@ const db = new UserDatabase();
 export const initUser = createAsyncThunk('user/initUser', async () => {
   return db.getUserData();
 });
+
+export const register = createAsyncThunk(
+  'user/register',
+  async (args: { userName: string }, thunkApi) => {
+    const userId = await backendApi.register({
+      userName: args.userName,
+      location: (thunkApi.getState() as RootState).user.currentPeerId || '',
+    });
+    await db.saveNewUserData({
+      _id: userId,
+      lastOnline: new Date().toISOString(),
+      privateKey: '',
+      publicKey: '',
+      userName: args.userName,
+    });
+    return db.getUserData();
+  }
+);
 
 const initialState: State = {
   initialized: false,
@@ -29,7 +54,11 @@ const initialState: State = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentPeerId(state, action: PayloadAction<{ peerId: string }>) {
+      state.currentPeerId = action.payload.peerId;
+    },
+  },
   extraReducers: builder => {
     // Reset the state everytime initUser is called.
     builder.addCase(initUser.pending, () => {
@@ -44,7 +73,16 @@ const userSlice = createSlice({
 
     // Issue an error toast if initUser fails.
     builder.addCase(initUser.rejected, (state, { error }) => {
-      toast.error('Failed to initialize user state: ' + error.toString());
+      toast.error('Failed to initialize user state: ' + JSON.stringify(error));
+    });
+
+    // Set registered user as current user.
+    builder.addCase(register.fulfilled, (state, { payload }) => {
+      state.currentUser = payload!;
+    });
+
+    builder.addCase(register.rejected, (state, { error }) => {
+      toast.error('Failed to register user: ' + JSON.stringify(error));
     });
   },
 });
