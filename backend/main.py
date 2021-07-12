@@ -186,8 +186,15 @@ def acceptFriend():
     id = request.query['ID']
     friend = request.query['FRIEND']
     cur.execute("update friendReq set accept = 1 where friendB = ? and friendA= ?", (id, friend))
-    cur.execute("INSERT INTO friendReq (friendA,friendb, accept) VALUES (?,?,1)", (id, friend))
-    con.commit()
+
+    # Send mutial friend request if not already done.
+    cur.execute("select 1 from friendReq where friendA = ? and friendB = ? and accept=1", [id, friend])
+    content=cur.fetchall()
+    print(content)
+    print(len(content))
+    if len(content) < 1:
+        cur.execute("INSERT INTO friendReq (friendA,friendb, accept) VALUES (?,?,0)", (id, friend))
+        con.commit()
 
 init()
 

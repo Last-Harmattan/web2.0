@@ -4,6 +4,7 @@ import { getFriendRequest, GetFriendRequestResult, UserId } from '../api/backend
 import { Friend } from '../database/types/public/Friend';
 import { UserDatabase } from '../database/UserDatabase';
 import { RootState } from './reducers';
+import * as backendApi from '../api/backend';
 
 export interface State {
   /**
@@ -26,7 +27,7 @@ const db = new UserDatabase();
 /**
  * Initializes the friends state by loading all friends from the browser db.
  */
-export const initFriends = createAsyncThunk('posts/initFriends', async (_: void, thunkApi) => {
+export const initFriends = createAsyncThunk('friends/initFriends', async (_: void, thunkApi) => {
   const friends = await db.getAllFriends();
 
   // Start interval to periodically request new friend requests.
@@ -47,6 +48,19 @@ export const initFriends = createAsyncThunk('posts/initFriends', async (_: void,
 
   return { friends, pollIntervalHandle };
 });
+
+/**
+ * Accepts the given friend request.
+ */
+export const acceptFriendRequest = createAsyncThunk(
+  'friends/acceptFriendRequest',
+  async (friendRequest: GetFriendRequestResult, thunkApi) => {
+    const state = thunkApi.getState() as RootState;
+    const currentUserId = state.user.currentUser!._id;
+    await backendApi.acceptFriendRequest(currentUserId, friendRequest.from);
+    return friendRequest;
+  }
+);
 
 const initialState: State = {
   initialized: false,
@@ -83,7 +97,21 @@ const friendsSlice = createSlice({
 
     // Issue an error toast if initFriends fails.
     builder.addCase(initFriends.rejected, (state, { error }) => {
-      toast.error('Failed to initialize friends state: ' + error.toString());
+      toast.error('Failed to initialize friends state: ' + JSON.stringify(error));
+    });
+
+    builder.addCase(acceptFriendRequest.fulfilled, (state, { payload }) => {
+      const friend: Friend = { _id: payload.from, userName: payload.userName, lastOnline: '' };
+      state.friends.push(friend);
+      state.friendRequests.splice(
+        state.friendRequests.findIndex(req => req.from === friend._id),
+        1
+      );
+      db.addFriend(friend).catch(err => console.error(err));
+    });
+
+    builder.addCase(acceptFriendRequest.rejected, (state, { error }) => {
+      toast.error('Failed to accept friend request: ' + JSON.stringify(error));
     });
   },
 });
