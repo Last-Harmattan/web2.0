@@ -144,7 +144,10 @@ def upLocation():
 @app.route('/api/call/getLocation', method="GET")
 @app.route('/api/call/getlocation', method="GET")
 def getLocation():
-
+    try:
+        userid = request.query['USERID']
+    except:
+        return HTTPResponse(status=502, body="query incomplete")
     response.headers['Content-Type'] = 'application/json'
 
     def queryToJSON(query):
@@ -153,7 +156,7 @@ def getLocation():
             re.append({"LOCATION":e[0]})
         return(json.dumps(re))
 
-    cur.execute("select location from users where id = ?", [getfrom])
+    cur.execute("select location from users where id = ?", [userid])
     content=cur.fetchall()
     return(queryToJSON(content))
 
