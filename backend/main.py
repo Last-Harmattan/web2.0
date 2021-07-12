@@ -193,4 +193,4 @@ def acceptFriend():
 
 init()
 
-run(app, host='127.0.0.1', port=8800, quiet=False)
+run(app, host='0.0.0.0', port=8800, quiet=False)
