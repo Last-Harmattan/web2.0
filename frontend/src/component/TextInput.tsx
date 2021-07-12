@@ -9,7 +9,6 @@ export enum TextInputType {
 interface TextInputProps {
   placeholder: string;
   type: TextInputType;
-  onChangeValue?: (newValue: string) => void;
 }
 
 export function TextInput(props: TextInputProps) {
@@ -18,9 +17,6 @@ export function TextInput(props: TextInputProps) {
       type={props.type}
       placeholder={props.placeholder}
       className={styles.login_text_input}
-      onChange={ev => {
-        if (props != null) props.onChangeValue!!(ev.target.value);
-      }}
     ></input>
   );
 }

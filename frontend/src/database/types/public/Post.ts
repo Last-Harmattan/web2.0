@@ -9,7 +9,7 @@ import { Comment } from './Comment';
  * @member likes - number of likes of the post
  * @member dislikes - number of dislikes of the post
  */
-export interface Post {
+interface Post {
   _id?: string;
   authorId: string;
   date: string; //ISO-8601
