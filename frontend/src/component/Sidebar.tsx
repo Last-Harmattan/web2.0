@@ -6,8 +6,10 @@ import { useSelector } from 'react-redux';
 
 interface SidebarProps {
   value: string;
-  onSubmit: () => object;
+  onSubmit: () => void;
   onChangeValue: (newValue: string) => void;
+  requests: Array<{ from: string }>;
+  acceptRequest: () => void;
 }
 
 export function Sidebar(props: SidebarProps) {
@@ -29,6 +31,17 @@ export function Sidebar(props: SidebarProps) {
             <b>{friend.userName}</b>
           </p>
           <p className={styles.FriendField}>Last Online: {friend.lastOnline}</p>
+          <hr />
+        </div>
+      ))}
+      {props.requests.map(request => (
+        <div className={styles.Friend} key={request.from}>
+          <p className={styles.User}>{request.from}</p>
+          <Button
+            label='Akzeptieren'
+            onClick={props.acceptRequest}
+            className={styles.AcceptButton}
+          />
           <hr />
         </div>
       ))}
