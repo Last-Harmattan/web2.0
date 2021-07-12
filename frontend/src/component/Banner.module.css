@@ -9,9 +9,20 @@
   font-weight: 600;
   font-size: larger;
   margin-left: 20px;
+  margin-right: 20px;
   text-align: center;
   position: absolute;
   top: 50%;
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - 40px);
+}
+
+.Title {
+}
+
+.UserName {
+  margin-left: auto;
 }
